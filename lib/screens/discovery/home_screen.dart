@@ -5,30 +5,69 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../theme/app_colors.dart';
 import '../../providers/restaurant_provider.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../models/restaurant.dart';
 import '../../models/menu_item.dart';
 import '../menu/item_detail_sheet.dart';
+import '../checkout/auth_sheet.dart';
+import '../main_scaffold.dart';
 import 'restaurant_profile_screen.dart';
-import 'restaurant_discovery_screen.dart';
 import '../../widgets/app_loader.dart';
+import '../../widgets/quick_add_helper.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback? onOpenKitchens;
+  final ValueChanged<int>? onOpenTab;
+
+  const HomeScreen({
+    super.key,
+    this.onOpenKitchens,
+    this.onOpenTab,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final PageController _heroController = PageController();
   int _activeHeroIndex = 0;
   Timer? _heroTimer;
-
+  Timer? _popularDishTimer;
+  int _activePopularDishIndex = 0;
+  bool _pushNotifications = true;
+  bool _hapticFeedback = true;
 
   final Set<String> _favoriteItemIds = {};
 
+  void _openKitchensTab() {
+    if (widget.onOpenKitchens != null) {
+      widget.onOpenKitchens!();
+    } else {
+      MainScaffold.switchToTab(context, 1);
+    }
+  }
 
-  // Featured slides for the top hero banner
+  void _openTab(int index) {
+    if (widget.onOpenTab != null) {
+      widget.onOpenTab!(index);
+    } else {
+      MainScaffold.switchToTab(context, index);
+    }
+  }
+
+
+  // Kitchen showcase images mapping
+  static const Map<String, String> _kitchenImages = {
+    'rest_01': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80',
+    'rest_02': 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800&auto=format&fit=crop&q=80',
+    'rest_03': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&auto=format&fit=crop&q=80',
+    'rest_04': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80',
+  };
+
+  // Featured slides for the top hero banner (5 distinct gourmet sections)
   final List<Map<String, String>> _heroSlides = [
     {
       'tag': 'PREMIUM',
@@ -51,12 +90,27 @@ class _HomeScreenState extends State<HomeScreen> {
       'description': 'Cold-smoked Atlantic salmon on toasted muffin with velvet hollandaise.',
       'imageUrl': 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=80',
     },
+    {
+      'tag': 'SIGNATURE CUT',
+      'titlePrimary': 'Prime Wagyu',
+      'titleSecondary': 'Ribeye',
+      'description': 'Flame-grilled prime ribeye with roasted bone marrow butter & thyme jus.',
+      'imageUrl': 'https://images.unsplash.com/photo-1558030006-450675393462?w=600&auto=format&fit=crop&q=80',
+    },
+    {
+      'tag': 'HAUTE DOLCE',
+      'titlePrimary': 'Belgian',
+      'titleSecondary': 'Fondant',
+      'description': 'Molten Valrhona dark chocolate fondant with Madagascar vanilla gelato.',
+      'imageUrl': 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=600&auto=format&fit=crop&q=80',
+    },
   ];
 
   @override
   void initState() {
     super.initState();
     _startHeroAutoScroll();
+    _startPopularAutoLoop();
   }
 
   void _startHeroAutoScroll() {
@@ -72,9 +126,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _startPopularAutoLoop() {
+    _popularDishTimer?.cancel();
+    _popularDishTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (!mounted) return;
+      setState(() {
+        _activePopularDishIndex = (_activePopularDishIndex + 1) % 4;
+      });
+    });
+  }
+
   @override
   void dispose() {
     _heroTimer?.cancel();
+    _popularDishTimer?.cancel();
     _heroController.dispose();
     super.dispose();
   }
@@ -111,7 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<MenuItem> displayedItems = allMenuItems.take(10).toList();
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: const Color(0xFF0F0F12),
+      drawer: _buildAppDrawer(context),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -134,11 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           // Hamburger Menu Button
                           InkWell(
                             onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => const RestaurantDiscoveryScreen(),
-                                ),
-                              );
+                              _scaffoldKey.currentState?.openDrawer();
                             },
                             borderRadius: BorderRadius.circular(20),
                             child: Container(
@@ -167,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 14),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(24),
+                                  borderRadius: BorderRadius.circular(12),
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.black.withValues(alpha: 0.15),
@@ -383,11 +446,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
 
-                    // Carousel Dots (5 dots)
+                    // Carousel Dots (dynamically matches _heroSlides count)
                     Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: List.generate(5, (dotIndex) {
+                        children: List.generate(_heroSlides.length, (dotIndex) {
                           final isActive = dotIndex == _activeHeroIndex;
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
@@ -416,12 +479,12 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(34),
-                  topRight: Radius.circular(34),
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.only(top: 24, bottom: 40),
+                padding: const EdgeInsets.only(top: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -476,6 +539,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               item: item,
                               restaurant: restaurant,
                             ),
+                            onQuickAdd: () => CartHelper.quickAddToCart(
+                              context,
+                              item: item,
+                              restaurant: restaurant,
+                            ),
                           );
                         },
                       ),
@@ -490,7 +558,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
                           color: const Color(0xFF141416),
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.12),
@@ -506,7 +574,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               clipBehavior: Clip.none,
                               children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(24),
+                                  borderRadius: BorderRadius.circular(12),
                                   child: Image.network(
                                     'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
                                     width: 54,
@@ -614,7 +682,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFE5BA73),
-                                      borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
                                       'Explore',
@@ -650,13 +718,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => const RestaurantDiscoveryScreen(),
-                                ),
-                              );
-                            },
+                            onTap: _openKitchensTab,
                             child: Row(
                               children: [
                                 Text(
@@ -707,18 +769,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: 220,
                               decoration: BoxDecoration(
                                 color: const Color(0xFFF7F7F9),
-                                borderRadius: BorderRadius.circular(18),
+                                borderRadius: BorderRadius.circular(12),
                                 border: Border.all(color: const Color(0xFFEAEAEA)),
                               ),
                               child: Row(
                                 children: [
                                   ClipRRect(
                                     borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(18),
-                                      bottomLeft: Radius.circular(18),
+                                      topLeft: Radius.circular(12),
+                                      bottomLeft: Radius.circular(12),
                                     ),
                                     child: Image.network(
-                                      restaurant.imageUrl,
+                                      _kitchenImages[restaurant.id] ?? restaurant.imageUrl,
                                       width: 85,
                                       height: double.infinity,
                                       fit: BoxFit.cover,
@@ -793,12 +855,1475 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                       ),
+                    ),                    const SizedBox(height: 36),
+
+                    // ─── Today's Specials: 2x2 Curated Tile Grid ──────────────
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Today\'s Specials',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: const Color(0xFF111111),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFF6B35).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.local_fire_department_rounded, color: Color(0xFFFF6B35), size: 13),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Ends tonight',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFFFF6B35),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // 2x2 Tile Grid for Today's Specials
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: 114,
+                                  child: _BillboardChip(
+                                    label: 'Grilled',
+                                    sublabel: 'Mains',
+                                    discount: '20% OFF',
+                                    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=300&auto=format&fit=crop&q=80',
+                                    gradientColor: const Color(0xFFB33000),
+                                    onTap: () {
+                                      provider.setSearchQuery('Steak');
+                                      _showSearchSheet(context, provider);
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 114,
+                                  child: _BillboardChip(
+                                    label: 'Vegan',
+                                    sublabel: 'Bowls',
+                                    discount: 'New',
+                                    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&auto=format&fit=crop&q=80',
+                                    gradientColor: const Color(0xFF1B5E20),
+                                    onTap: () {
+                                      provider.setSearchQuery('Salad');
+                                      _showSearchSheet(context, provider);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: 114,
+                                  child: _BillboardChip(
+                                    label: 'Truffle',
+                                    sublabel: 'Pasta',
+                                    discount: 'Chef\'s Pick',
+                                    imageUrl: 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=300&auto=format&fit=crop&q=80',
+                                    gradientColor: const Color(0xFF4A2800),
+                                    onTap: () {
+                                      provider.setSearchQuery('Truffle');
+                                      _showSearchSheet(context, provider);
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 114,
+                                  child: _BillboardChip(
+                                    label: 'Desserts',
+                                    sublabel: '& Cakes',
+                                    discount: '15% OFF',
+                                    imageUrl: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=300&auto=format&fit=crop&q=80',
+                                    gradientColor: const Color(0xFF880E4F),
+                                    onTap: () {
+                                      provider.setSearchQuery('Dessert');
+                                      _showSearchSheet(context, provider);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 38),
+
+                    // ─── Popular Dishes: Trending Culinary Leaderboard ────────
+                    if (displayedItems.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Popular Dishes',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                    color: const Color(0xFF111111),
+                                    letterSpacing: -0.3,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Top-ranked favorites trending near you',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 11,
+                                    color: const Color(0xFF999999),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE5BA73).withValues(alpha: 0.18),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.star_rounded, color: Color(0xFFD9822B), size: 13),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Top 4',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: const Color(0xFFD9822B),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Looping accordion list: 4 dishes, 1 open at a time, cycling smoothly in a loop
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          children: List.generate(
+                            displayedItems.take(4).length,
+                            (idx) {
+                              final item = displayedItems[idx];
+                              final restaurant = restaurants.firstWhere(
+                                (r) => r.id == item.restaurantId,
+                                orElse: () => restaurants.first,
+                              );
+                              final isOpen = idx == _activePopularDishIndex;
+                              final rank = idx + 1;
+                              final isFav = _favoriteItemIds.contains(item.id);
+
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: AnimatedCrossFade(
+                                  duration: const Duration(milliseconds: 400),
+                                  firstCurve: Curves.easeOutCubic,
+                                  secondCurve: Curves.easeInCubic,
+                                  sizeCurve: Curves.easeInOutCubic,
+                                  crossFadeState: isOpen ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                  firstChild: _buildPopularOpenHero(
+                                    item: item,
+                                    restaurant: restaurant,
+                                    rank: rank,
+                                    isFav: isFav,
+                                  ),
+                                  secondChild: _buildPopularClosedRow(
+                                    item: item,
+                                    restaurant: restaurant,
+                                    rank: rank,
+                                    onTap: () {
+                                      setState(() => _activePopularDishIndex = idx);
+                                      _startPopularAutoLoop();
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+
+                    const SizedBox(height: 36),
+
+                    // ─── Experience the Difference promo banner (Edge-to-Edge) ──
+                    Container(
+                      width: double.infinity,
+                      height: 200,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF141416),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            width: 220,
+                            child: Image.network(
+                              'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&auto=format&fit=crop&q=80',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => const SizedBox(),
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    const Color(0xFF141416),
+                                    const Color(0xFF141416).withValues(alpha: 0.94),
+                                    const Color(0xFF141416).withValues(alpha: 0.0),
+                                  ],
+                                  stops: const [0.0, 0.48, 1.0],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'FINE DINING',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    color: const Color(0xFFE5BA73),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 2.8,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Experience the\nDifference',
+                                  style: GoogleFonts.playfairDisplay(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.15,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Curated tasting tables & private dining',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    color: Colors.white.withValues(alpha: 0.65),
+                                    fontSize: 11,
+                                  ),
+                                ),
+                                const SizedBox(height: 14),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (restaurants.isNotEmpty) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => RestaurantProfileScreen(
+                                            restaurantId: restaurants.first.id,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFE5BA73),
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0xFFE5BA73).withValues(alpha: 0.3),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          'Reserve a Table',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            color: const Color(0xFF141416),
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        const Icon(
+                                          Icons.arrow_forward_rounded,
+                                          color: Color(0xFF141416),
+                                          size: 14,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Popular Dishes: Expanded Spotlight Card (Open State)
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildPopularOpenHero({
+    required MenuItem item,
+    required Restaurant restaurant,
+    required int rank,
+    required bool isFav,
+  }) {
+    String rankBadgeText;
+    switch (rank) {
+      case 1:
+        rankBadgeText = '#1 MOST ORDERED';
+        break;
+      case 2:
+        rankBadgeText = '#2 TRENDING';
+        break;
+      case 3:
+        rankBadgeText = '#3 CHEF\'S PICK';
+        break;
+      default:
+        rankBadgeText = '#$rank TOP RATED';
+        break;
+    }
+
+    return GestureDetector(
+      onTap: () => ItemDetailSheet.show(context, item: item, restaurant: restaurant),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFEFEFEF)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.07),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                  child: Image.network(
+                    item.imageUrl,
+                    height: 155,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: 155,
+                      color: const Color(0xFFF0F0F0),
+                      child: const Icon(Icons.fastfood, color: Colors.grey, size: 40),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.6),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Badge top-left
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFE5BA73), Color(0xFFD9822B)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.local_fire_department_rounded, color: Color(0xFF141416), size: 14),
+                        const SizedBox(width: 4),
+                        Text(
+                          rankBadgeText,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFF141416),
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Heart toggle top-right
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      if (isFav) {
+                        _favoriteItemIds.remove(item.id);
+                      } else {
+                        _favoriteItemIds.add(item.id);
+                      }
+                    }),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.18),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                        color: isFav ? const Color(0xFFE53935) : const Color(0xFF999999),
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                // Price bottom-left
+                Positioned(
+                  bottom: 10,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.15),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      'Rs. ${item.price.toInt()}',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: const Color(0xFF141416),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // Info row
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 15,
+                            color: const Color(0xFF141416),
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              restaurant.name,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: const Color(0xFF777777),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(Icons.star_rounded, color: Color(0xFFE5BA73), size: 14),
+                            const SizedBox(width: 3),
+                            Text(
+                              restaurant.rating.toString(),
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF222222),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '· ${restaurant.estimatedTime}',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11,
+                                color: const Color(0xFF999999),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: () => CartHelper.quickAddToCart(context, item: item, restaurant: restaurant),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF141416),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.15),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.add_rounded, color: Color(0xFFE5BA73), size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Add',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFE5BA73),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Popular Dishes: Collapsed Row (Closed State)
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildPopularClosedRow({
+    required MenuItem item,
+    required Restaurant restaurant,
+    required int rank,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF8F8FA),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFEEEEF0)),
+        ),
+        child: Row(
+          children: [
+            // Rank badge
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: const Color(0xFF141416),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '0$rank',
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFFE5BA73),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            // Square dish image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                item.imageUrl,
+                width: 58,
+                height: 58,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 58,
+                  height: 58,
+                  color: Colors.grey[200],
+                  child: const Icon(Icons.fastfood, color: Colors.grey, size: 24),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            // Dish Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      color: const Color(0xFF141416),
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    restaurant.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      color: const Color(0xFF777777),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.star_rounded, color: Color(0xFFD9822B), size: 13),
+                      const SizedBox(width: 2),
+                      Text(
+                        restaurant.rating.toString(),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFF333333),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE5BA73).withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          item.category,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFFD9822B),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            // Price & mini expand/view button
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Rs. ${item.price.toInt()}',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                    color: const Color(0xFF141416),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                GestureDetector(
+                  onTap: () => CartHelper.quickAddToCart(context, item: item, restaurant: restaurant),
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF141416),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.add_rounded, color: Color(0xFFE5BA73), size: 18),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Luxury Side Navigation Drawer
+  // ─────────────────────────────────────────────────────────────────────────
+  Widget _buildAppDrawer(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+    final user = auth.currentUser;
+    final cart = context.watch<CartProvider>();
+
+    return Drawer(
+      backgroundColor: const Color(0xFF141416),
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Drawer Header with Branding & Profile Snippet
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFFE5BA73), Color(0xFFC4892A)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.restaurant_menu_rounded,
+                              color: Color(0xFF141416),
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'OB HOSPITALITY',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              Text(
+                                'Gourmet Dining Club',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: const Color(0xFFE5BA73),
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
+
+                  // User Profile snippet
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [Color(0xFFE5BA73), Color(0xFFC4892A)],
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              auth.isLoggedIn && user != null
+                                  ? user.name[0].toUpperCase()
+                                  : 'G',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: const Color(0xFF141416),
+                                fontWeight: FontWeight.w800,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                auth.isLoggedIn && user != null ? user.name : 'Guest Diner',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                auth.isLoggedIn && user != null
+                                    ? user.email
+                                    : 'Tap to sign in or explore',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white54,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const Divider(color: Colors.white10, height: 1),
+
+            // Scrollable Navigation & Settings Items
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                children: [
+                  _drawerSectionTitle('NAVIGATION & PAGES'),
+                  _drawerTile(
+                    icon: Icons.home_rounded,
+                    title: 'Home',
+                    subtitle: 'Daily gourmet selections',
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _openTab(0);
+                    },
+                  ),
+                  _drawerTile(
+                    icon: Icons.storefront_rounded,
+                    title: 'Our Kitchens',
+                    subtitle: 'Full-screen swipe discovery',
+                    badge: 'Swipe',
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _openTab(1);
+                    },
+                  ),
+                  _drawerTile(
+                    icon: Icons.shopping_bag_rounded,
+                    title: 'My Cart',
+                    subtitle: 'Your selected items',
+                    countBadge: cart.itemCount > 0 ? cart.itemCount : null,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _openTab(2);
+                    },
+                  ),
+                  _drawerTile(
+                    icon: Icons.receipt_long_rounded,
+                    title: 'Order History',
+                    subtitle: 'Live tracking & previous orders',
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _openTab(3);
+                    },
+                  ),
+                  _drawerTile(
+                    icon: Icons.person_rounded,
+                    title: 'Profile & Account',
+                    subtitle: 'Personal details & security',
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _openTab(4);
+                    },
+                  ),
+
+                  const SizedBox(height: 12),
+                  const Divider(color: Colors.white10, height: 1),
+                  const SizedBox(height: 8),
+
+                  _drawerSectionTitle('SETTINGS & PREFERENCES'),
+                  _drawerTile(
+                    icon: Icons.settings_rounded,
+                    title: 'App Settings',
+                    subtitle: 'Notifications, currency & diet',
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _showSettingsSheet(context);
+                    },
+                  ),
+                  _drawerTile(
+                    icon: Icons.location_on_rounded,
+                    title: 'Saved Addresses',
+                    subtitle: 'Delivery locations',
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      _openTab(4);
+                    },
+                  ),
+                  _drawerTile(
+                    icon: Icons.tune_rounded,
+                    title: 'Mock Mode (Dev)',
+                    subtitle: auth.isLoggedIn ? 'Currently Logged In' : 'Currently Guest',
+                    badge: auth.isLoggedIn ? 'VIP' : 'GUEST',
+                    onTap: () {
+                      auth.toggleMockAuth();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            auth.isLoggedIn
+                                ? 'Switched to Logged In Mode'
+                                : 'Switched to Guest Mode',
+                          ),
+                          duration: const Duration(seconds: 1),
+                          backgroundColor: const Color(0xFF1C1C1F),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            const Divider(color: Colors.white10, height: 1),
+
+            // Bottom Auth Button
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: auth.isLoggedIn
+                  ? InkWell(
+                      onTap: () {
+                        auth.logout();
+                        Navigator.of(context).pop();
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFD65839).withValues(alpha: 0.5)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Log Out',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFFD65839),
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        AuthSheet.show(context, onAuthenticated: () {});
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE5BA73),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Sign In / Create Account',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFF141416),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Settings Bottom Sheet
+  // ─────────────────────────────────────────────────────────────────────────
+  void _showSettingsSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              decoration: BoxDecoration(
+                color: const Color(0xFF18181B),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'App Settings',
+                        style: GoogleFonts.plusJakartaSans(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 20),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Notifications switch
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    value: _pushNotifications,
+                    activeThumbColor: const Color(0xFFE5BA73),
+                    title: Text(
+                      'Order & Promo Notifications',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Receive live tracking updates and exclusive culinary drops',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white54,
+                        fontSize: 11,
+                      ),
+                    ),
+                    onChanged: (val) {
+                      setSheetState(() => _pushNotifications = val);
+                      setState(() => _pushNotifications = val);
+                    },
+                  ),
+                  const Divider(color: Colors.white10),
+
+                  // Sound & Haptic Feedback switch
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    value: _hapticFeedback,
+                    activeThumbColor: const Color(0xFFE5BA73),
+                    title: Text(
+                      'Haptic Feedback & Sounds',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Subtle vibrations on taps and dish selection',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white54,
+                        fontSize: 11,
+                      ),
+                    ),
+                    onChanged: (val) {
+                      setSheetState(() => _hapticFeedback = val);
+                      setState(() => _hapticFeedback = val);
+                    },
+                  ),
+                  const Divider(color: Colors.white10),
+
+                  // Currency & Region Info
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      'Currency & Region',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Pakistani Rupee (PKR · Rs.)',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white54,
+                        fontSize: 11,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.check_circle_rounded, color: Color(0xFFE5BA73), size: 18),
+                  ),
+                  const Divider(color: Colors.white10),
+
+                  // App info
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'OB Hospitality App',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white38,
+                            fontSize: 11,
+                          ),
+                        ),
+                        Text(
+                          'v1.0.4 · Build 42',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white38,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _drawerSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 12, 8, 6),
+      child: Text(
+        title,
+        style: GoogleFonts.plusJakartaSans(
+          color: const Color(0xFFE5BA73),
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.1,
+        ),
+      ),
+    );
+  }
+
+  Widget _drawerTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    String? badge,
+    int? countBadge,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: const Color(0xFFE5BA73), size: 19),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.white54,
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (badge != null)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE5BA73).withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  badge,
+                  style: GoogleFonts.plusJakartaSans(
+                    color: const Color(0xFFE5BA73),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            if (countBadge != null)
+              Container(
+                padding: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFE5BA73),
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  countBadge.toString(),
+                  style: GoogleFonts.plusJakartaSans(
+                    color: const Color(0xFF141416),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            const SizedBox(width: 4),
+            const Icon(Icons.chevron_right_rounded, color: Colors.white24, size: 18),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Today's Specials — Photo-backed Billboard Chip
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _BillboardChip extends StatelessWidget {
+  final String label;
+  final String sublabel;
+  final String discount;
+  final String imageUrl;
+  final Color gradientColor;
+  final VoidCallback? onTap;
+
+  const _BillboardChip({
+    required this.label,
+    required this.sublabel,
+    required this.discount,
+    required this.imageUrl,
+    required this.gradientColor,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Background food photo
+              Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(color: gradientColor),
+              ),
+              // Dark gradient overlay
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      gradientColor.withValues(alpha: 0.25),
+                      gradientColor.withValues(alpha: 0.90),
+                    ],
+                  ),
+                ),
+              ),
+              // Text content
+              Padding(
+                padding: const EdgeInsets.all(11),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Discount badge top
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE5BA73),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        discount,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFF141416),
+                        ),
+                      ),
+                    ),
+                    // Bottom labels
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          label,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            height: 1.1,
+                          ),
+                        ),
+                        Text(
+                          sublabel,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withValues(alpha: 0.75),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -815,6 +2340,7 @@ class _DishCard extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback onToggleFavorite;
   final VoidCallback onTap;
+  final VoidCallback? onQuickAdd;
 
   const _DishCard({
     required this.item,
@@ -822,6 +2348,7 @@ class _DishCard extends StatelessWidget {
     required this.isFavorite,
     required this.onToggleFavorite,
     required this.onTap,
+    this.onQuickAdd,
   });
 
   @override
@@ -832,7 +2359,7 @@ class _DishCard extends StatelessWidget {
         width: 175,
         decoration: BoxDecoration(
           color: const Color(0xFF141416),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.16),
@@ -849,8 +2376,8 @@ class _DishCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(22),
-                    topRight: Radius.circular(22),
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
                   ),
                   child: Image.network(
                     item.imageUrl,
@@ -928,14 +2455,36 @@ class _DishCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text(
-                      'Rs. ${item.price.toInt()}',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.3,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Rs. ${item.price.toInt()}',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: onQuickAdd,
+                          child: Container(
+                            width: 28,
+                            height: 28,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFE5BA73),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.add_rounded,
+                              color: Color(0xFF141416),
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -981,7 +2530,7 @@ class _SearchSheetState extends State<_SearchSheet> {
       ),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1005,7 +2554,8 @@ class _SearchSheetState extends State<_SearchSheet> {
               filled: true,
               fillColor: AppColors.surfaceVariant,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
+
                 borderSide: BorderSide.none,
               ),
             ),

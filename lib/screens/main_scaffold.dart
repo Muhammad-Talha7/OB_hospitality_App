@@ -12,6 +12,11 @@ import 'profile/profile_screen.dart';
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
 
+  static void switchToTab(BuildContext context, int index) {
+    final state = context.findAncestorStateOfType<_MainScaffoldState>();
+    state?.switchTab(index);
+  }
+
   @override
   State<MainScaffold> createState() => _MainScaffoldState();
 }
@@ -19,12 +24,21 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    RestaurantDiscoveryScreen(),
-    CartScreen(),
-    OrderHistoryScreen(),
-    ProfileScreen(),
+  void switchTab(int index) {
+    if (index >= 0 && index < _screens.length) {
+      setState(() => _currentIndex = index);
+    }
+  }
+
+  late final List<Widget> _screens = [
+    HomeScreen(
+      onOpenKitchens: () => switchTab(1),
+      onOpenTab: (idx) => switchTab(idx),
+    ),
+    const RestaurantDiscoveryScreen(),
+    const CartScreen(),
+    const OrderHistoryScreen(),
+    const ProfileScreen(),
   ];
 
   @override

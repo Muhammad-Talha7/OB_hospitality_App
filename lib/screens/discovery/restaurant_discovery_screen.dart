@@ -25,8 +25,8 @@ class _RestaurantDiscoveryScreenState extends State<RestaurantDiscoveryScreen>
 
   // Placeholder hero images per restaurant (will be replaced by assets later)
   static const List<String> _heroImages = [
-    'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&auto=format&fit=crop&q=90',
-    'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=1200&auto=format&fit=crop&q=90',
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&auto=format&fit=crop&q=90',
+    'https://images.unsplash.com/photo-1552611052-33e04de081de?w=1200&auto=format&fit=crop&q=90',
     'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1200&auto=format&fit=crop&q=90',
     'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&auto=format&fit=crop&q=90',
   ];

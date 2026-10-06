@@ -9,6 +9,7 @@ import '../../providers/restaurant_provider.dart';
 import '../cart/cart_screen.dart';
 import '../../widgets/app_loader.dart';
 import '../menu/item_detail_sheet.dart';
+import '../../widgets/quick_add_helper.dart';
 
 class RestaurantProfileScreen extends StatefulWidget {
   final String restaurantId;
@@ -286,6 +287,7 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
               restaurantIsOpen: restaurant.isOpen,
               badge: idx == 0 ? _Badge.chefPick : _Badge.popular,
               onTap: () => ItemDetailSheet.show(context, item: popularItems[idx], restaurant: restaurant),
+              onQuickAdd: () => CartHelper.quickAddToCart(context, item: popularItems[idx], restaurant: restaurant),
             ),
           ),
           childCount: popularItems.length,
@@ -323,6 +325,7 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
                   restaurantIsOpen: restaurant.isOpen,
                   badge: badge,
                   onTap: () => ItemDetailSheet.show(context, item: item, restaurant: restaurant),
+                  onQuickAdd: () => CartHelper.quickAddToCart(context, item: item, restaurant: restaurant),
                 ),
               );
             },
@@ -490,7 +493,7 @@ class _CategoryBarDelegate extends SliverPersistentHeaderDelegate {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         itemCount: categories.length + 1,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (ctx, idx) {
           final cat = idx == 0 ? 'All' : categories[idx - 1];
           final isActive = cat == activeCategory;
@@ -534,12 +537,14 @@ class _MenuItemCard extends StatelessWidget {
   final bool restaurantIsOpen;
   final _Badge badge;
   final VoidCallback onTap;
+  final VoidCallback? onQuickAdd;
 
   const _MenuItemCard({
     required this.item,
     required this.restaurantIsOpen,
     required this.badge,
     required this.onTap,
+    this.onQuickAdd,
   });
 
   @override
@@ -652,17 +657,20 @@ class _MenuItemCard extends StatelessWidget {
                                 ),
                             ],
                           ),
-                          Container(
-                            width: 32,
-                            height: 32,
-                            decoration: BoxDecoration(
-                              color: canOrder ? const Color(0xFFE5BA73) : const Color(0xFFF3F3F6),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              canOrder ? Icons.add_rounded : Icons.block_rounded,
-                              color: canOrder ? Colors.white : const Color(0xFFCCCCCC),
-                              size: 17,
+                          GestureDetector(
+                            onTap: canOrder ? onQuickAdd : null,
+                            child: Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: canOrder ? const Color(0xFFE5BA73) : const Color(0xFFF3F3F6),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                canOrder ? Icons.add_rounded : Icons.block_rounded,
+                                color: canOrder ? const Color(0xFF141416) : const Color(0xFFCCCCCC),
+                                size: 17,
+                              ),
                             ),
                           ),
                         ],

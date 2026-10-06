@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 import 'providers/auth_provider.dart';
@@ -12,6 +13,12 @@ import 'screens/splash_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Remove the native launch window the instant Flutter's first frame is ready
+  // so only the Flutter SplashScreen widget is ever visible.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  });
 
   // Instantiate mock repositories (ready to swap with real API implementations later)
   final authRepository = MockAuthRepository();

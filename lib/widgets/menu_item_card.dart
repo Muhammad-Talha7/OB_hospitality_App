@@ -7,12 +7,14 @@ class MenuItemCard extends StatelessWidget {
   final MenuItem item;
   final bool restaurantIsOpen;
   final VoidCallback onTap;
+  final VoidCallback? onQuickAdd;
 
   const MenuItemCard({
     super.key,
     required this.item,
     required this.restaurantIsOpen,
     required this.onTap,
+    this.onQuickAdd,
   });
 
   @override
@@ -21,12 +23,12 @@ class MenuItemCard extends StatelessWidget {
 
     return InkWell(
       onTap: canOrder ? onTap : null,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.border),
           boxShadow: [AppColors.softShadow],
         ),
@@ -93,7 +95,7 @@ class MenuItemCard extends StatelessWidget {
                     child: Image.network(
                       item.imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (context, error, stackTrace) => Container(
                         color: AppColors.surfaceVariant,
                         child: const Icon(Icons.fastfood, color: AppColors.textTertiary),
                       ),
@@ -106,29 +108,32 @@ class MenuItemCard extends StatelessWidget {
                   bottom: -10,
                   right: 8,
                   left: 8,
-                  child: Container(
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: canOrder ? AppColors.primary : AppColors.border,
-                      borderRadius: BorderRadius.circular(999),
-                      boxShadow: canOrder
-                          ? [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.18),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              )
-                            ]
-                          : [],
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      canOrder ? '+ ADD' : 'UNAVAILABLE',
-                      style: AppTypography.labelMedium.copyWith(
-                        color: canOrder ? Colors.white : AppColors.textTertiary,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5,
+                  child: GestureDetector(
+                    onTap: canOrder ? (onQuickAdd ?? onTap) : null,
+                    child: Container(
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: canOrder ? AppColors.primary : AppColors.border,
+                        borderRadius: BorderRadius.circular(999),
+                        boxShadow: canOrder
+                            ? [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.18),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                )
+                              ]
+                            : [],
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        canOrder ? '+ ADD' : 'UNAVAILABLE',
+                        style: AppTypography.labelMedium.copyWith(
+                          color: canOrder ? Colors.white : AppColors.textTertiary,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                   ),

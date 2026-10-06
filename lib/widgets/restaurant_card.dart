@@ -22,7 +22,7 @@ class RestaurantCard extends StatelessWidget {
       child: Container(
         height: 260,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.13),

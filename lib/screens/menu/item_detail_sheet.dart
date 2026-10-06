@@ -26,10 +26,26 @@ class ItemDetailSheet extends StatefulWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      barrierColor: Colors.black.withValues(alpha: 0.65),
+      sheetAnimationStyle: const AnimationStyle(
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInOutCubic,
+        duration: Duration(milliseconds: 380),
+        reverseDuration: Duration(milliseconds: 320),
+      ),
       backgroundColor: Colors.transparent,
-      builder: (ctx) => ItemDetailSheet(
-        item: item,
-        restaurant: restaurant,
+      builder: (ctx) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Navigator.of(ctx).pop(),
+        child: GestureDetector(
+          onTap: () {}, // Prevent taps inside sheet from popping
+          child: ItemDetailSheet(
+            item: item,
+            restaurant: restaurant,
+          ),
+        ),
       ),
     );
   }
@@ -79,12 +95,33 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
             : null,
       );
       Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Added ${widget.item.name} to cart'),
-          duration: const Duration(seconds: 2),
+          content: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF141416),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.check_rounded, color: Color(0xFFE5BA73), size: 14),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Added "${widget.item.name}" to cart',
+                  style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF141416)),
+                ),
+              ),
+            ],
+          ),
+          duration: const Duration(milliseconds: 1800),
           behavior: SnackBarBehavior.floating,
-          backgroundColor: AppColors.primary,
+          backgroundColor: const Color(0xFFE5BA73),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
         ),
       );
     } else {
@@ -104,12 +141,33 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
                 : null,
           );
           Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Started new order from ${widget.restaurant.name}'),
-              duration: const Duration(seconds: 2),
+              content: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF141416),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.check_rounded, color: Color(0xFFE5BA73), size: 14),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Started new order from ${widget.restaurant.name}',
+                      style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF141416)),
+                    ),
+                  ),
+                ],
+              ),
+              duration: const Duration(milliseconds: 1800),
               behavior: SnackBarBehavior.floating,
-              backgroundColor: AppColors.primary,
+              backgroundColor: const Color(0xFFE5BA73),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
             ),
           );
         },
@@ -120,9 +178,10 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.85,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
+      initialChildSize: 0.82,
+      minChildSize: 0.40,
+      maxChildSize: 0.92,
+      shouldCloseOnMinExtent: true,
       builder: (_, scrollController) {
         return Container(
           decoration: const BoxDecoration(
@@ -132,16 +191,44 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
           clipBehavior: Clip.antiAlias,
           child: Column(
             children: [
-              // Sheet Drag Handle
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(top: 12, bottom: 8),
-                  decoration: BoxDecoration(
-                    color: AppColors.border,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+              // Top Drag Handle & Close Button
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 16, 6),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 32),
+                    Expanded(
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: Container(
+                            width: 44,
+                            height: 4.5,
+                            decoration: BoxDecoration(
+                              color: AppColors.border,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: const BoxDecoration(
+                          color: AppColors.surfaceVariant,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close_rounded,
+                          color: AppColors.textPrimary,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -160,7 +247,7 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
                         child: Image.network(
                           widget.item.imageUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
+                          errorBuilder: (context, error, stackTrace) => Container(
                             color: AppColors.surfaceVariant,
                             child: const Center(
                               child: Icon(Icons.fastfood, size: 50, color: AppColors.textTertiary),
@@ -194,7 +281,7 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
                           ),
                         ),
                         Text(
-                          '\$${widget.item.price.toStringAsFixed(2)}',
+                          'Rs. ${widget.item.price.toInt()}',
                           style: AppTypography.price.copyWith(fontSize: 20),
                         ),
                       ],
@@ -284,7 +371,7 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
                                   ),
                                 ),
                                 Text(
-                                  '+ \$${addon.priceDelta.toStringAsFixed(2)}',
+                                  '+ Rs. ${addon.priceDelta.toInt()}',
                                   style: AppTypography.price.copyWith(
                                     fontSize: 13,
                                     color: isSelected ? AppColors.primary : AppColors.textSecondary,
@@ -336,7 +423,7 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
                   border: const Border(top: BorderSide(color: AppColors.border)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset: const Offset(0, -4),
                     ),
@@ -351,7 +438,7 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: AppButton(
-                        label: 'Add to Cart • \$${_currentPrice.toStringAsFixed(2)}',
+                        label: 'Add to Cart • Rs. ${_currentPrice.toInt()}',
                         onPressed: _handleAddToCart,
                       ),
                     ),
