@@ -102,24 +102,24 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
             children: [
               Container(
                 padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF141416),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check_rounded, color: Color(0xFFE5BA73), size: 14),
+                child: const Icon(Icons.check_rounded, color: Colors.white, size: 14),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Added "${widget.item.name}" to cart',
-                  style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF141416)),
+                  style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
                 ),
               ),
             ],
           ),
           duration: const Duration(milliseconds: 1800),
           behavior: SnackBarBehavior.floating,
-          backgroundColor: const Color(0xFFE5BA73),
+          backgroundColor: AppColors.primary,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
         ),
@@ -148,24 +148,24 @@ class _ItemDetailSheetState extends State<ItemDetailSheet> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF141416),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.check_rounded, color: Color(0xFFE5BA73), size: 14),
+                    child: const Icon(Icons.check_rounded, color: Colors.white, size: 14),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'Started new order from ${widget.restaurant.name}',
-                      style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF141416)),
+                      style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
                     ),
                   ),
                 ],
               ),
               duration: const Duration(milliseconds: 1800),
               behavior: SnackBarBehavior.floating,
-              backgroundColor: const Color(0xFFE5BA73),
+              backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
             ),

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../models/order.dart';
 import '../../providers/order_provider.dart';
+import '../../theme/app_colors.dart';
 import 'leave_review_sheet.dart';
 import 'order_tracking_screen.dart';
 
@@ -26,7 +27,7 @@ class OrderHistoryScreen extends StatelessWidget {
                 child: Text(
                   'My Orders',
                   style: GoogleFonts.plusJakartaSans(
-                    color: const Color(0xFF111111),
+                    color: AppColors.textPrimary,
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
                   ),
@@ -39,13 +40,20 @@ class OrderHistoryScreen extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 height: 44,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF3F3F6),
+                  color: AppColors.surfaceVariant,
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: TabBar(
                   indicator: BoxDecoration(
-                    color: const Color(0xFFE5BA73),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.25),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
@@ -58,7 +66,7 @@ class OrderHistoryScreen extends StatelessWidget {
                     fontSize: 12,
                   ),
                   labelColor: Colors.white,
-                  unselectedLabelColor: const Color(0xFF888888),
+                  unselectedLabelColor: AppColors.textTertiary,
                   tabs: [
                     Tab(text: 'Active (${orderProvider.activeOrders.length})'),
                     Tab(text: 'Past (${orderProvider.pastOrders.length})'),
@@ -103,16 +111,16 @@ class OrderHistoryScreen extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: const BoxDecoration(
-              color: Color(0xFFF3F3F6),
+              color: AppColors.surfaceVariant,
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 36, color: const Color(0xFFCCCCCC)),
+            child: Icon(icon, size: 36, color: AppColors.textTertiary),
           ),
           const SizedBox(height: 16),
           Text(
             title,
             style: GoogleFonts.plusJakartaSans(
-              color: const Color(0xFF111111),
+              color: AppColors.textPrimary,
               fontSize: 18,
               fontWeight: FontWeight.w700,
             ),
@@ -122,7 +130,7 @@ class OrderHistoryScreen extends StatelessWidget {
             subtitle,
             textAlign: TextAlign.center,
             style: GoogleFonts.plusJakartaSans(
-              color: const Color(0xFF9E9E9E),
+              color: AppColors.textSecondary,
               fontSize: 13,
             ),
           ),
@@ -159,7 +167,7 @@ class _OrderCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFEEEEEE)),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
@@ -180,10 +188,10 @@ class _OrderCard extends StatelessWidget {
                     width: 44,
                     height: 44,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (context, error, stackTrace) => Container(
                       width: 44,
                       height: 44,
-                      color: const Color(0xFFF3F3F6),
+                      color: AppColors.surfaceVariant,
                     ),
                   ),
                 ),
@@ -195,7 +203,7 @@ class _OrderCard extends StatelessWidget {
                       Text(
                         order.restaurantName,
                         style: GoogleFonts.plusJakartaSans(
-                          color: const Color(0xFF111111),
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
                         ),
@@ -204,7 +212,7 @@ class _OrderCard extends StatelessWidget {
                       Text(
                         '#${order.id} · ${order.fulfilmentType.displayName}',
                         style: GoogleFonts.plusJakartaSans(
-                          color: const Color(0xFFAAAAAA),
+                          color: AppColors.textTertiary,
                           fontSize: 11,
                         ),
                       ),
@@ -217,7 +225,7 @@ class _OrderCard extends StatelessWidget {
 
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 12),
-              child: Divider(color: Color(0xFFF0F0F0), height: 1),
+              child: Divider(color: AppColors.border, height: 1),
             ),
 
             Text(
@@ -225,7 +233,7 @@ class _OrderCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.plusJakartaSans(
-                color: const Color(0xFF888888),
+                color: AppColors.textSecondary,
                 fontSize: 12,
               ),
             ),
@@ -241,7 +249,7 @@ class _OrderCard extends StatelessWidget {
                     Text(
                       'Rs. ${order.total.toStringAsFixed(0)}',
                       style: GoogleFonts.plusJakartaSans(
-                        color: const Color(0xFF111111),
+                        color: AppColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
                         letterSpacing: -0.3,
@@ -250,7 +258,7 @@ class _OrderCard extends StatelessWidget {
                     Text(
                       order.paymentMethod,
                       style: GoogleFonts.plusJakartaSans(
-                        color: const Color(0xFFAAAAAA),
+                        color: AppColors.textTertiary,
                         fontSize: 10,
                       ),
                     ),
@@ -262,8 +270,15 @@ class _OrderCard extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE5BA73),
+                        color: AppColors.primary,
                         borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -285,12 +300,12 @@ class _OrderCard extends StatelessWidget {
                 else if (isDelivered && order.isReviewed)
                   Row(
                     children: [
-                      const Icon(Icons.check_circle_rounded, size: 14, color: Color(0xFF5FB760)),
+                      const Icon(Icons.check_circle_rounded, size: 14, color: AppColors.forest),
                       const SizedBox(width: 5),
                       Text(
                         'Reviewed',
                         style: GoogleFonts.plusJakartaSans(
-                          color: const Color(0xFF5FB760),
+                          color: AppColors.forest,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -301,7 +316,7 @@ class _OrderCard extends StatelessWidget {
                   Text(
                     'Track →',
                     style: GoogleFonts.plusJakartaSans(
-                      color: const Color(0xFFC4892A),
+                      color: AppColors.primary,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -323,9 +338,9 @@ class _StatusPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, color, bg) = switch (status) {
-      OrderStatus.delivered => ('Delivered', const Color(0xFF5FB760), const Color(0xFFEDF7EE)),
-      OrderStatus.cancelled || OrderStatus.rejected => ('Cancelled', const Color(0xFFD65839), const Color(0xFFFDF0ED)),
-      _ => ('Active', const Color(0xFFC4892A), const Color(0xFFFAF6EE)),
+      OrderStatus.delivered => ('Delivered', AppColors.forest, AppColors.forestSubtle),
+      OrderStatus.cancelled || OrderStatus.rejected => ('Cancelled', AppColors.error, AppColors.terracottaSubtle),
+      _ => ('Active', AppColors.primary, AppColors.primarySubtle),
     };
 
     return Container(

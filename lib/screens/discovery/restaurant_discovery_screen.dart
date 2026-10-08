@@ -142,7 +142,7 @@ class _RestaurantDiscoveryScreenState extends State<RestaurantDiscoveryScreen>
                         ),
                         const SizedBox(width: 8),
                         const Text(
-                          'OB Hospitality',
+                          'OB Hospitality Group',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
 import '../../models/order.dart';
@@ -68,6 +69,17 @@ class OrderConfirmedScreen extends StatelessWidget {
               Text(
                 'Your order #${order.id} from ${order.restaurantName} has been received by the kitchen and is being accepted.',
                 style: AppTypography.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Thank you for dining with OB Hospitality Group',
+                style: GoogleFonts.plusJakartaSans(
+                  color: AppColors.textSecondary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),

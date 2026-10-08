@@ -29,7 +29,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('OB Hospitality'), findsOneWidget);
+    expect(find.text('OB Hospitality Group'), findsOneWidget);
     expect(find.text('Kitchens'), findsOneWidget);
   });
 }

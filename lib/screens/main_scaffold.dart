@@ -52,7 +52,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF141416),
+          color: AppColors.darkBackground,
           border: Border(
             top: BorderSide(
               color: Colors.white.withValues(alpha: 0.08),
@@ -89,7 +89,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                   label: 'Kitchens',
                 ),
 
-                // 3. Center Elevated "+" Action Button (as in reference image)
+                // 3. Center Elevated "+" Action Button (Brand signature button)
                 GestureDetector(
                   onTap: () {
                     // Open kitchens discovery screen or quick action
@@ -100,16 +100,16 @@ class _MainScaffoldState extends State<MainScaffold> {
                     height: 52,
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1C1C1F),
+                      color: AppColors.primary,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.12),
+                        color: Colors.white.withValues(alpha: 0.25),
                         width: 1.5,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.4),
-                          blurRadius: 10,
+                          color: AppColors.primaryDark.withValues(alpha: 0.5),
+                          blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
                       ],
@@ -117,7 +117,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                     child: const Center(
                       child: Icon(
                         Icons.add_rounded,
-                        color: Color(0xFFE5BA73),
+                        color: Colors.white,
                         size: 28,
                       ),
                     ),
@@ -171,7 +171,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                 Icon(
                   isSelected ? activeIcon : icon,
                   size: 24,
-                  color: isSelected ? const Color(0xFFE5BA73) : Colors.white.withValues(alpha: 0.45),
+                  color: isSelected ? AppColors.ochre : Colors.white.withValues(alpha: 0.45),
                 ),
                 if (badgeCount > 0)
                   Positioned(
@@ -202,7 +202,7 @@ class _MainScaffoldState extends State<MainScaffold> {
               label,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 10,
-                color: isSelected ? const Color(0xFFE5BA73) : Colors.white.withValues(alpha: 0.45),
+                color: isSelected ? AppColors.ochre : Colors.white.withValues(alpha: 0.45),
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               ),
             ),

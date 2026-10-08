@@ -20,11 +20,7 @@ class HomeScreen extends StatefulWidget {
   final VoidCallback? onOpenKitchens;
   final ValueChanged<int>? onOpenTab;
 
-  const HomeScreen({
-    super.key,
-    this.onOpenKitchens,
-    this.onOpenTab,
-  });
+  const HomeScreen({super.key, this.onOpenKitchens, this.onOpenTab});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -58,13 +54,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
   // Kitchen showcase images mapping
   static const Map<String, String> _kitchenImages = {
-    'rest_01': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80',
-    'rest_02': 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800&auto=format&fit=crop&q=80',
-    'rest_03': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&auto=format&fit=crop&q=80',
-    'rest_04': 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80',
+    'rest_01':
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80',
+    'rest_02':
+        'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800&auto=format&fit=crop&q=80',
+    'rest_03':
+        'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&auto=format&fit=crop&q=80',
+    'rest_04':
+        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80',
   };
 
   // Featured slides for the top hero banner (5 distinct gourmet sections)
@@ -73,36 +72,46 @@ class _HomeScreenState extends State<HomeScreen> {
       'tag': 'PREMIUM',
       'titlePrimary': 'Menu',
       'titleSecondary': 'Recipe',
-      'description': 'Artisan culinary recipes & gourmet dining crafted by master chefs.',
-      'imageUrl': 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
+      'description':
+          'Artisan culinary recipes & gourmet dining crafted by master chefs.',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80',
     },
     {
       'tag': 'CHEF\'S CHOICE',
       'titlePrimary': 'Truffle',
       'titleSecondary': 'Risotto',
-      'description': 'Slow-stirred arborio with wild porcini, white wine & black truffle oil.',
-      'imageUrl': 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=600&auto=format&fit=crop&q=80',
+      'description':
+          'Slow-stirred arborio with wild porcini, white wine & black truffle oil.',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=600&auto=format&fit=crop&q=80',
     },
     {
       'tag': 'ARTISAN',
       'titlePrimary': 'Smoked',
       'titleSecondary': 'Salmon',
-      'description': 'Cold-smoked Atlantic salmon on toasted muffin with velvet hollandaise.',
-      'imageUrl': 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=80',
+      'description':
+          'Cold-smoked Atlantic salmon on toasted muffin with velvet hollandaise.',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=600&auto=format&fit=crop&q=80',
     },
     {
       'tag': 'SIGNATURE CUT',
       'titlePrimary': 'Prime Wagyu',
       'titleSecondary': 'Ribeye',
-      'description': 'Flame-grilled prime ribeye with roasted bone marrow butter & thyme jus.',
-      'imageUrl': 'https://images.unsplash.com/photo-1558030006-450675393462?w=600&auto=format&fit=crop&q=80',
+      'description':
+          'Flame-grilled prime ribeye with roasted bone marrow butter & thyme jus.',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1558030006-450675393462?w=600&auto=format&fit=crop&q=80',
     },
     {
       'tag': 'HAUTE DOLCE',
       'titlePrimary': 'Belgian',
       'titleSecondary': 'Fondant',
-      'description': 'Molten Valrhona dark chocolate fondant with Madagascar vanilla gelato.',
-      'imageUrl': 'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=600&auto=format&fit=crop&q=80',
+      'description':
+          'Molten Valrhona dark chocolate fondant with Madagascar vanilla gelato.',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=600&auto=format&fit=crop&q=80',
     },
   ];
 
@@ -159,10 +168,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final restaurants = provider.restaurants;
 
     // Status bar style
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
 
     if (provider.isLoading && restaurants.isEmpty) return const AppLoader();
 
@@ -177,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: const Color(0xFF0F0F12),
+      backgroundColor: AppColors.darkBackground,
       drawer: _buildAppDrawer(context),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -185,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             // ─── TOP SECTION: Dark Background with Header & Hero Banner ─────
             Container(
-              color: const Color(0xFF0F0F12),
+              color: AppColors.darkBackground,
               child: SafeArea(
                 bottom: false,
                 child: Column(
@@ -227,13 +238,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () => _showSearchSheet(context, provider),
                               child: Container(
                                 height: 42,
-                                padding: const EdgeInsets.symmetric(horizontal: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.15),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.15,
+                                      ),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -243,14 +258,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     const Icon(
                                       Icons.search_rounded,
-                                      color: Color(0xFF333333),
+                                      color: AppColors.textPrimary,
                                       size: 19,
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      'User center',
+                                      'OB Hospitality Group',
                                       style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFF666666),
+                                        color: AppColors.textSecondary,
                                         fontSize: 13,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -291,7 +306,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 215,
                       child: PageView.builder(
                         controller: _heroController,
-                        onPageChanged: (idx) => setState(() => _activeHeroIndex = idx),
+                        onPageChanged: (idx) =>
+                            setState(() => _activeHeroIndex = idx),
                         itemCount: _heroSlides.length,
                         itemBuilder: (context, index) {
                           final slide = _heroSlides[index];
@@ -303,13 +319,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Expanded(
                                   flex: 6,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         slide['tag']!,
                                         style: GoogleFonts.plusJakartaSans(
-                                          color: const Color(0xFFE5BA73),
+                                          color: AppColors.ochre,
                                           fontSize: 11,
                                           fontWeight: FontWeight.w800,
                                           letterSpacing: 2.5,
@@ -320,23 +337,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                         text: TextSpan(
                                           children: [
                                             TextSpan(
-                                              text: '${slide['titlePrimary']!} \n',
-                                              style: GoogleFonts.playfairDisplay(
-                                                color: Colors.white,
-                                                fontSize: 34,
-                                                fontWeight: FontWeight.w700,
-                                                height: 1.05,
-                                              ),
+                                              text:
+                                                  '${slide['titlePrimary']!} \n',
+                                              style:
+                                                  GoogleFonts.playfairDisplay(
+                                                    color: Colors.white,
+                                                    fontSize: 34,
+                                                    fontWeight: FontWeight.w700,
+                                                    height: 1.05,
+                                                  ),
                                             ),
                                             TextSpan(
                                               text: slide['titleSecondary']!,
-                                              style: GoogleFonts.playfairDisplay(
-                                                color: const Color(0xFFE5BA73),
-                                                fontSize: 34,
-                                                fontStyle: FontStyle.italic,
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.05,
-                                              ),
+                                              style:
+                                                  GoogleFonts.playfairDisplay(
+                                                    color: AppColors.ochre,
+                                                    fontSize: 34,
+                                                    fontStyle: FontStyle.italic,
+                                                    fontWeight: FontWeight.w600,
+                                                    height: 1.05,
+                                                  ),
                                             ),
                                           ],
                                         ),
@@ -347,7 +367,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.plusJakartaSans(
-                                          color: Colors.white.withValues(alpha: 0.65),
+                                          color: Colors.white.withValues(
+                                            alpha: 0.65,
+                                          ),
                                           fontSize: 11,
                                           height: 1.35,
                                         ),
@@ -374,7 +396,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: const Color(0xFFE5BA73).withValues(alpha: 0.18),
+                                                color: const Color(
+                                                  0xFFE5BA73,
+                                                ).withValues(alpha: 0.18),
                                                 blurRadius: 24,
                                                 spreadRadius: 2,
                                               ),
@@ -389,12 +413,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                             width: 142,
                                             height: 142,
                                             fit: BoxFit.cover,
-                                            errorBuilder: (_, _, _) => Container(
-                                              width: 142,
-                                              height: 142,
-                                              color: Colors.white10,
-                                              child: const Icon(Icons.restaurant, color: Colors.white54),
-                                            ),
+                                            errorBuilder: (_, _, _) =>
+                                                Container(
+                                                  width: 142,
+                                                  height: 142,
+                                                  color: Colors.white10,
+                                                  child: const Icon(
+                                                    Icons.restaurant,
+                                                    color: Colors.white54,
+                                                  ),
+                                                ),
                                           ),
                                         ),
 
@@ -405,12 +433,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: GestureDetector(
                                             onTap: () {
                                               if (allMenuItems.isNotEmpty) {
-                                                final item = allMenuItems[index % allMenuItems.length];
-                                                final rest = restaurants.firstWhere(
-                                                  (r) => r.id == item.restaurantId,
-                                                  orElse: () => restaurants.first,
+                                                final item =
+                                                    allMenuItems[index %
+                                                        allMenuItems.length];
+                                                final rest = restaurants
+                                                    .firstWhere(
+                                                      (r) =>
+                                                          r.id ==
+                                                          item.restaurantId,
+                                                      orElse: () =>
+                                                          restaurants.first,
+                                                    );
+                                                ItemDetailSheet.show(
+                                                  context,
+                                                  item: item,
+                                                  restaurant: rest,
                                                 );
-                                                ItemDetailSheet.show(context, item: item, restaurant: rest);
                                               }
                                             },
                                             child: Container(
@@ -421,7 +459,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 shape: BoxShape.circle,
                                                 boxShadow: [
                                                   BoxShadow(
-                                                    color: Colors.black.withValues(alpha: 0.25),
+                                                    color: Colors.black
+                                                        .withValues(
+                                                          alpha: 0.25,
+                                                        ),
                                                     blurRadius: 10,
                                                     offset: const Offset(0, 3),
                                                   ),
@@ -454,12 +495,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           final isActive = dotIndex == _activeHeroIndex;
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 3,
+                              vertical: 8,
+                            ),
                             width: isActive ? 16 : 5,
                             height: 5,
                             decoration: BoxDecoration(
                               color: isActive
-                                  ? const Color(0xFFE5BA73)
+                                  ? AppColors.ochre
                                   : Colors.white.withValues(alpha: 0.25),
                               borderRadius: BorderRadius.circular(4),
                             ),
@@ -496,7 +540,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: const Color(0xFF111111),
+                          color: AppColors.textPrimary,
                           letterSpacing: -0.4,
                         ),
                       ),
@@ -557,7 +601,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF141416),
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
@@ -584,7 +628,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       width: 54,
                                       height: 54,
                                       color: Colors.white12,
-                                      child: const Icon(Icons.person, color: Colors.white54),
+                                      child: const Icon(
+                                        Icons.person,
+                                        color: Colors.white54,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -595,9 +642,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     width: 12,
                                     height: 12,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFE5BA73),
+                                      color: AppColors.ochre,
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: const Color(0xFF141416), width: 2),
+                                      border: Border.all(
+                                        color: AppColors.darkBackground,
+                                        width: 2,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -617,7 +667,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Text(
                                         'Special Selection',
                                         style: GoogleFonts.plusJakartaSans(
-                                          color: const Color(0xFFE5BA73),
+                                          color: AppColors.ochre,
                                           fontSize: 10,
                                           fontWeight: FontWeight.w700,
                                           letterSpacing: 0.5,
@@ -626,7 +676,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       const SizedBox(width: 4),
                                       const Icon(
                                         Icons.star_rounded,
-                                        color: Color(0xFFE5BA73),
+                                        color: AppColors.ochre,
                                         size: 13,
                                       ),
                                     ],
@@ -644,7 +694,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Text(
                                     '5-course curated artisan menu',
                                     style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.white.withValues(alpha: 0.55),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.55,
+                                      ),
                                       fontSize: 11,
                                     ),
                                   ),
@@ -671,23 +723,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                     if (restaurants.isNotEmpty) {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (_) => RestaurantProfileScreen(
-                                            restaurantId: restaurants.first.id,
-                                          ),
+                                          builder: (_) =>
+                                              RestaurantProfileScreen(
+                                                restaurantId:
+                                                    restaurants.first.id,
+                                              ),
                                         ),
                                       );
                                     }
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFE5BA73),
+                                      color: AppColors.ochre,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
                                       'Explore',
                                       style: GoogleFonts.plusJakartaSans(
-                                        color: const Color(0xFF141416),
+                                        color: AppColors.darkBackground,
                                         fontWeight: FontWeight.w800,
                                         fontSize: 12,
                                       ),
@@ -714,7 +771,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 20,
                               fontWeight: FontWeight.w800,
-                              color: const Color(0xFF111111),
+                              color: AppColors.textPrimary,
                             ),
                           ),
                           GestureDetector(
@@ -726,13 +783,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
-                                    color: const Color(0xFFD9822B),
+                                    color: AppColors.ochre,
                                   ),
                                 ),
                                 const SizedBox(width: 4),
                                 const Icon(
                                   Icons.arrow_forward_rounded,
-                                  color: Color(0xFFD9822B),
+                                  color: AppColors.ochre,
                                   size: 15,
                                 ),
                               ],
@@ -768,9 +825,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Container(
                               width: 220,
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF7F7F9),
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: const Color(0xFFEAEAEA)),
+                                border: Border.all(
+                                  color: AppColors.border,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.04),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               child: Row(
                                 children: [
@@ -780,7 +846,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       bottomLeft: Radius.circular(12),
                                     ),
                                     child: Image.network(
-                                      _kitchenImages[restaurant.id] ?? restaurant.imageUrl,
+                                      _kitchenImages[restaurant.id] ??
+                                          restaurant.imageUrl,
                                       width: 85,
                                       height: double.infinity,
                                       fit: BoxFit.cover,
@@ -795,8 +862,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(12),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             restaurant.name,
@@ -823,7 +892,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             children: [
                                               const Icon(
                                                 Icons.star_rounded,
-                                                color: Color(0xFFD9822B),
+                                                color: AppColors.ochre,
                                                 size: 15,
                                               ),
                                               const SizedBox(width: 2),
@@ -832,15 +901,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 style: GoogleFonts.plusJakartaSans(
                                                   fontWeight: FontWeight.w700,
                                                   fontSize: 11,
-                                                  color: const Color(0xFF222222),
+                                                  color: AppColors.textPrimary,
                                                 ),
                                               ),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                restaurant.estimatedTime,
-                                                style: GoogleFonts.plusJakartaSans(
-                                                  fontSize: 10,
-                                                  color: const Color(0xFF888888),
+                                              const SizedBox(width: 6),
+                                              Flexible(
+                                                child: Text(
+                                                  restaurant.estimatedTime,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.plusJakartaSans(
+                                                    fontSize: 10,
+                                                    color: AppColors.textSecondary,
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -855,7 +928,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                       ),
-                    ),                    const SizedBox(height: 36),
+                    ),
+                    const SizedBox(height: 36),
 
                     // ─── Today's Specials: 2x2 Curated Tile Grid ──────────────
                     Padding(
@@ -868,25 +942,32 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 20,
                               fontWeight: FontWeight.w800,
-                              color: const Color(0xFF111111),
+                              color: AppColors.textPrimary,
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFF6B35).withValues(alpha: 0.1),
+                              color: AppColors.terracottaSubtle,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.local_fire_department_rounded, color: Color(0xFFFF6B35), size: 13),
+                                const Icon(
+                                  Icons.local_fire_department_rounded,
+                                  color: AppColors.terracotta,
+                                  size: 13,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   'Ends tonight',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
-                                    color: const Color(0xFFFF6B35),
+                                    color: AppColors.terracotta,
                                   ),
                                 ),
                               ],
@@ -911,7 +992,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     label: 'Grilled',
                                     sublabel: 'Mains',
                                     discount: '20% OFF',
-                                    imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=300&auto=format&fit=crop&q=80',
+                                    imageUrl:
+                                        'https://images.unsplash.com/photo-1544025162-d76694265947?w=300&auto=format&fit=crop&q=80',
                                     gradientColor: const Color(0xFFB33000),
                                     onTap: () {
                                       provider.setSearchQuery('Steak');
@@ -928,7 +1010,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     label: 'Vegan',
                                     sublabel: 'Bowls',
                                     discount: 'New',
-                                    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&auto=format&fit=crop&q=80',
+                                    imageUrl:
+                                        'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&auto=format&fit=crop&q=80',
                                     gradientColor: const Color(0xFF1B5E20),
                                     onTap: () {
                                       provider.setSearchQuery('Salad');
@@ -949,7 +1032,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     label: 'Truffle',
                                     sublabel: 'Pasta',
                                     discount: 'Chef\'s Pick',
-                                    imageUrl: 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=300&auto=format&fit=crop&q=80',
+                                    imageUrl:
+                                        'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=300&auto=format&fit=crop&q=80',
                                     gradientColor: const Color(0xFF4A2800),
                                     onTap: () {
                                       provider.setSearchQuery('Truffle');
@@ -966,7 +1050,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     label: 'Desserts',
                                     sublabel: '& Cakes',
                                     discount: '15% OFF',
-                                    imageUrl: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=300&auto=format&fit=crop&q=80',
+                                    imageUrl:
+                                        'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=300&auto=format&fit=crop&q=80',
                                     gradientColor: const Color(0xFF880E4F),
                                     onTap: () {
                                       provider.setSearchQuery('Dessert');
@@ -999,7 +1084,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w800,
-                                    color: const Color(0xFF111111),
+                                    color: AppColors.textPrimary,
                                     letterSpacing: -0.3,
                                   ),
                                 ),
@@ -1008,27 +1093,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                   'Top-ranked favorites trending near you',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 11,
-                                    color: const Color(0xFF999999),
+                                    color: AppColors.textSecondary,
                                   ),
                                 ),
                               ],
                             ),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE5BA73).withValues(alpha: 0.18),
+                                color: AppColors.primarySubtle,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.star_rounded, color: Color(0xFFD9822B), size: 13),
+                                  const Icon(
+                                    Icons.star_rounded,
+                                    color: AppColors.primary,
+                                    size: 13,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     'Top 4',
                                     style: GoogleFonts.plusJakartaSans(
                                       fontSize: 11,
                                       fontWeight: FontWeight.w700,
-                                      color: const Color(0xFFD9822B),
+                                      color: AppColors.primary,
                                     ),
                                   ),
                                 ],
@@ -1062,7 +1154,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   firstCurve: Curves.easeOutCubic,
                                   secondCurve: Curves.easeInCubic,
                                   sizeCurve: Curves.easeInOutCubic,
-                                  crossFadeState: isOpen ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                  crossFadeState: isOpen
+                                      ? CrossFadeState.showFirst
+                                      : CrossFadeState.showSecond,
                                   firstChild: _buildPopularOpenHero(
                                     item: item,
                                     restaurant: restaurant,
@@ -1074,7 +1168,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     restaurant: restaurant,
                                     rank: rank,
                                     onTap: () {
-                                      setState(() => _activePopularDishIndex = idx);
+                                      setState(
+                                        () => _activePopularDishIndex = idx,
+                                      );
                                       _startPopularAutoLoop();
                                     },
                                   ),
@@ -1093,9 +1189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: double.infinity,
                       height: 200,
                       clipBehavior: Clip.hardEdge,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF141416),
-                      ),
+                      decoration: const BoxDecoration(color: AppColors.darkBackground),
                       child: Stack(
                         children: [
                           Positioned(
@@ -1106,7 +1200,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Image.network(
                               'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&auto=format&fit=crop&q=80',
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => const SizedBox(),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const SizedBox(),
                             ),
                           ),
                           Positioned.fill(
@@ -1114,9 +1209,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    const Color(0xFF141416),
-                                    const Color(0xFF141416).withValues(alpha: 0.94),
-                                    const Color(0xFF141416).withValues(alpha: 0.0),
+                                    AppColors.darkBackground,
+                                    AppColors.darkBackground.withValues(alpha: 0.94),
+                                    AppColors.darkBackground.withValues(alpha: 0.0),
                                   ],
                                   stops: const [0.0, 0.48, 1.0],
                                 ),
@@ -1124,7 +1219,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -1132,7 +1230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Text(
                                   'FINE DINING',
                                   style: GoogleFonts.plusJakartaSans(
-                                    color: const Color(0xFFE5BA73),
+                                    color: AppColors.ochre,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 2.8,
@@ -1162,21 +1260,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                     if (restaurants.isNotEmpty) {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (_) => RestaurantProfileScreen(
-                                            restaurantId: restaurants.first.id,
-                                          ),
+                                          builder: (_) =>
+                                              RestaurantProfileScreen(
+                                                restaurantId:
+                                                    restaurants.first.id,
+                                              ),
                                         ),
                                       );
                                     }
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFE5BA73),
+                                      color: AppColors.primary,
                                       borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: const Color(0xFFE5BA73).withValues(alpha: 0.3),
+                                          color: AppColors.primary.withValues(alpha: 0.3),
                                           blurRadius: 10,
                                           offset: const Offset(0, 4),
                                         ),
@@ -1188,7 +1291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Text(
                                           'Reserve a Table',
                                           style: GoogleFonts.plusJakartaSans(
-                                            color: const Color(0xFF141416),
+                                            color: Colors.white,
                                             fontWeight: FontWeight.w800,
                                             fontSize: 12,
                                           ),
@@ -1196,7 +1299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         const SizedBox(width: 6),
                                         const Icon(
                                           Icons.arrow_forward_rounded,
-                                          color: Color(0xFF141416),
+                                          color: Colors.white,
                                           size: 14,
                                         ),
                                       ],
@@ -1245,13 +1348,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return GestureDetector(
-      onTap: () => ItemDetailSheet.show(context, item: item, restaurant: restaurant),
+      onTap: () =>
+          ItemDetailSheet.show(context, item: item, restaurant: restaurant),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFEFEFEF)),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.07),
@@ -1277,8 +1381,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       height: 155,
-                      color: const Color(0xFFF0F0F0),
-                      child: const Icon(Icons.fastfood, color: Colors.grey, size: 40),
+                      color: AppColors.surfaceVariant,
+                      child: const Icon(
+                        Icons.fastfood,
+                        color: Colors.grey,
+                        size: 40,
+                      ),
                     ),
                   ),
                 ),
@@ -1305,10 +1413,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   top: 12,
                   left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFFE5BA73), Color(0xFFD9822B)],
+                        colors: [AppColors.primary, AppColors.primaryLight],
                       ),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
@@ -1322,14 +1433,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.local_fire_department_rounded, color: Color(0xFF141416), size: 14),
+                        const Icon(
+                          Icons.local_fire_department_rounded,
+                          color: Colors.white,
+                          size: 14,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           rankBadgeText,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 10,
                             fontWeight: FontWeight.w800,
-                            color: const Color(0xFF141416),
+                            color: Colors.white,
                             letterSpacing: 0.4,
                           ),
                         ),
@@ -1363,8 +1478,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       child: Icon(
-                        isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                        color: isFav ? const Color(0xFFE53935) : const Color(0xFF999999),
+                        isFav
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        color: isFav
+                            ? const Color(0xFFE53935)
+                            : const Color(0xFF999999),
                         size: 18,
                       ),
                     ),
@@ -1375,7 +1494,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   bottom: 10,
                   left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
@@ -1391,7 +1513,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
-                        color: const Color(0xFF141416),
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ),
@@ -1416,7 +1538,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: GoogleFonts.plusJakartaSans(
                             fontWeight: FontWeight.w800,
                             fontSize: 15,
-                            color: const Color(0xFF141416),
+                            color: AppColors.textPrimary,
                             letterSpacing: -0.2,
                           ),
                         ),
@@ -1427,19 +1549,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               restaurant.name,
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 12,
-                                color: const Color(0xFF777777),
+                                color: AppColors.textSecondary,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Icon(Icons.star_rounded, color: Color(0xFFE5BA73), size: 14),
+                            const Icon(
+                              Icons.star_rounded,
+                              color: AppColors.ochre,
+                              size: 14,
+                            ),
                             const SizedBox(width: 3),
                             Text(
                               restaurant.rating.toString(),
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
-                                color: const Color(0xFF222222),
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -1447,7 +1573,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               '· ${restaurant.estimatedTime}',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 11,
-                                color: const Color(0xFF999999),
+                                color: AppColors.textTertiary,
                               ),
                             ),
                           ],
@@ -1457,15 +1583,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(width: 12),
                   GestureDetector(
-                    onTap: () => CartHelper.quickAddToCart(context, item: item, restaurant: restaurant),
+                    onTap: () => CartHelper.quickAddToCart(
+                      context,
+                      item: item,
+                      restaurant: restaurant,
+                    ),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 9,
+                      ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF141416),
+                        color: AppColors.primary,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.15),
+                            color: AppColors.primary.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -1474,12 +1607,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.add_rounded, color: Color(0xFFE5BA73), size: 16),
+                          const Icon(
+                            Icons.add_rounded,
+                            color: Colors.white,
+                            size: 16,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             'Add',
                             style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFFE5BA73),
+                              color: Colors.white,
                               fontWeight: FontWeight.w800,
                               fontSize: 12,
                             ),
@@ -1511,9 +1648,16 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: const Color(0xFFF8F8FA),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFEEEEF0)),
+          border: Border.all(color: AppColors.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -1522,14 +1666,14 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: const Color(0xFF141416),
+                color: AppColors.primarySubtle,
                 borderRadius: BorderRadius.circular(8),
               ),
               alignment: Alignment.center,
               child: Text(
                 '0$rank',
                 style: GoogleFonts.plusJakartaSans(
-                  color: const Color(0xFFE5BA73),
+                  color: AppColors.primary,
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
                 ),
@@ -1549,7 +1693,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 58,
                   height: 58,
                   color: Colors.grey[200],
-                  child: const Icon(Icons.fastfood, color: Colors.grey, size: 24),
+                  child: const Icon(
+                    Icons.fastfood,
+                    color: Colors.grey,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
@@ -1567,7 +1715,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: GoogleFonts.plusJakartaSans(
                       fontWeight: FontWeight.w700,
                       fontSize: 14,
-                      color: const Color(0xFF141416),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 3),
@@ -1577,27 +1725,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 11,
-                      color: const Color(0xFF777777),
+                      color: AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.star_rounded, color: Color(0xFFD9822B), size: 13),
+                      const Icon(
+                        Icons.star_rounded,
+                        color: AppColors.ochre,
+                        size: 13,
+                      ),
                       const SizedBox(width: 2),
                       Text(
                         restaurant.rating.toString(),
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF333333),
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE5BA73).withValues(alpha: 0.15),
+                          color: AppColors.primarySubtle,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
@@ -1605,7 +1760,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 9,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFFD9822B),
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
@@ -1624,20 +1779,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w800,
                     fontSize: 14,
-                    color: const Color(0xFF141416),
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 6),
                 GestureDetector(
-                  onTap: () => CartHelper.quickAddToCart(context, item: item, restaurant: restaurant),
+                  onTap: () => CartHelper.quickAddToCart(
+                    context,
+                    item: item,
+                    restaurant: restaurant,
+                  ),
                   child: Container(
                     width: 32,
                     height: 32,
                     decoration: const BoxDecoration(
-                      color: Color(0xFF141416),
+                      color: AppColors.primary,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.add_rounded, color: Color(0xFFE5BA73), size: 18),
+                    child: const Icon(
+                      Icons.add_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
                   ),
                 ),
               ],
@@ -1657,7 +1820,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final cart = context.watch<CartProvider>();
 
     return Drawer(
-      backgroundColor: const Color(0xFF141416),
+      backgroundColor: AppColors.darkBackground,
       child: SafeArea(
         child: Column(
           children: [
@@ -1677,7 +1840,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 36,
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFFE5BA73), Color(0xFFC4892A)],
+                                colors: [AppColors.primary, AppColors.primaryLight],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -1685,7 +1848,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             child: const Icon(
                               Icons.restaurant_menu_rounded,
-                              color: Color(0xFF141416),
+                              color: Colors.white,
                               size: 20,
                             ),
                           ),
@@ -1694,7 +1857,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'OB HOSPITALITY',
+                                'OB HOSPITALITY GROUP',
                                 style: GoogleFonts.plusJakartaSans(
                                   color: Colors.white,
                                   fontSize: 13,
@@ -1705,7 +1868,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text(
                                 'Gourmet Dining Club',
                                 style: GoogleFonts.plusJakartaSans(
-                                  color: const Color(0xFFE5BA73),
+                                  color: AppColors.ochre,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -1715,7 +1878,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                        icon: const Icon(
+                          Icons.close_rounded,
+                          color: Colors.white70,
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                     ],
@@ -1728,7 +1894,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.08),
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -1738,7 +1906,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: LinearGradient(
-                              colors: [Color(0xFFE5BA73), Color(0xFFC4892A)],
+                              colors: [AppColors.primary, AppColors.primaryLight],
                             ),
                           ),
                           child: Center(
@@ -1747,7 +1915,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ? user.name[0].toUpperCase()
                                   : 'G',
                               style: GoogleFonts.plusJakartaSans(
-                                color: const Color(0xFF141416),
+                                color: Colors.white,
                                 fontWeight: FontWeight.w800,
                                 fontSize: 18,
                               ),
@@ -1760,7 +1928,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                auth.isLoggedIn && user != null ? user.name : 'Guest Diner',
+                                auth.isLoggedIn && user != null
+                                    ? user.name
+                                    : 'Guest Diner',
                                 style: GoogleFonts.plusJakartaSans(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
@@ -1794,7 +1964,10 @@ class _HomeScreenState extends State<HomeScreen> {
             // Scrollable Navigation & Settings Items
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 12,
+                ),
                 children: [
                   _drawerSectionTitle('NAVIGATION & PAGES'),
                   _drawerTile(
@@ -1871,7 +2044,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   _drawerTile(
                     icon: Icons.tune_rounded,
                     title: 'Mock Mode (Dev)',
-                    subtitle: auth.isLoggedIn ? 'Currently Logged In' : 'Currently Guest',
+                    subtitle: auth.isLoggedIn
+                        ? 'Currently Logged In'
+                        : 'Currently Guest',
                     badge: auth.isLoggedIn ? 'VIP' : 'GUEST',
                     onTap: () {
                       auth.toggleMockAuth();
@@ -1883,7 +2058,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : 'Switched to Guest Mode',
                           ),
                           duration: const Duration(seconds: 1),
-                          backgroundColor: const Color(0xFF1C1C1F),
+                          backgroundColor: AppColors.darkSurface,
                         ),
                       );
                     },
@@ -1908,14 +2083,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFFD65839).withValues(alpha: 0.5)),
+                          border: Border.all(
+                            color: AppColors.error.withValues(alpha: 0.5),
+                          ),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
                           child: Text(
                             'Log Out',
                             style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFFD65839),
+                              color: AppColors.error,
                               fontWeight: FontWeight.w700,
                               fontSize: 13,
                             ),
@@ -1933,14 +2110,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE5BA73),
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
                           child: Text(
                             'Sign In / Create Account',
                             style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFF141416),
+                              color: Colors.white,
                               fontWeight: FontWeight.w800,
                               fontSize: 13,
                             ),
@@ -1949,6 +2126,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
             ),
+            const SizedBox(height: 12),
+            Text(
+              'OB HOSPITALITY GROUP',
+              style: GoogleFonts.plusJakartaSans(
+                color: Colors.white24,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.8,
+              ),
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -1970,7 +2158,7 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
               decoration: BoxDecoration(
-                color: const Color(0xFF18181B),
+                color: AppColors.darkSurface,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
               ),
@@ -2001,7 +2189,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 20),
+                        icon: const Icon(
+                          Icons.close_rounded,
+                          color: Colors.white70,
+                          size: 20,
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                     ],
@@ -2012,7 +2204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     value: _pushNotifications,
-                    activeThumbColor: const Color(0xFFE5BA73),
+                    activeThumbColor: AppColors.ochre,
                     title: Text(
                       'Order & Promo Notifications',
                       style: GoogleFonts.plusJakartaSans(
@@ -2039,7 +2231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
                     value: _hapticFeedback,
-                    activeThumbColor: const Color(0xFFE5BA73),
+                    activeThumbColor: AppColors.ochre,
                     title: Text(
                       'Haptic Feedback & Sounds',
                       style: GoogleFonts.plusJakartaSans(
@@ -2080,7 +2272,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 11,
                       ),
                     ),
-                    trailing: const Icon(Icons.check_circle_rounded, color: Color(0xFFE5BA73), size: 18),
+                    trailing: const Icon(
+                      Icons.check_circle_rounded,
+                      color: AppColors.ochre,
+                      size: 18,
+                    ),
                   ),
                   const Divider(color: Colors.white10),
 
@@ -2122,7 +2318,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Text(
         title,
         style: GoogleFonts.plusJakartaSans(
-          color: const Color(0xFFE5BA73),
+          color: AppColors.ochre,
           fontSize: 10,
           fontWeight: FontWeight.w800,
           letterSpacing: 1.1,
@@ -2153,7 +2349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: const Color(0xFFE5BA73), size: 19),
+              child: Icon(icon, color: AppColors.ochre, size: 19),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -2182,13 +2378,13 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE5BA73).withValues(alpha: 0.18),
+                  color: AppColors.primarySubtle,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   badge,
                   style: GoogleFonts.plusJakartaSans(
-                    color: const Color(0xFFE5BA73),
+                    color: AppColors.primary,
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
                   ),
@@ -2198,20 +2394,24 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.all(5),
                 decoration: const BoxDecoration(
-                  color: Color(0xFFE5BA73),
+                  color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),
                 child: Text(
                   countBadge.toString(),
                   style: GoogleFonts.plusJakartaSans(
-                    color: const Color(0xFF141416),
+                    color: Colors.white,
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
             const SizedBox(width: 4),
-            const Icon(Icons.chevron_right_rounded, color: Colors.white24, size: 18),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: Colors.white24,
+              size: 18,
+            ),
           ],
         ),
       ),
@@ -2248,9 +2448,7 @@ class _BillboardChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -2258,7 +2456,8 @@ class _BillboardChip extends StatelessWidget {
               Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(color: gradientColor),
+                errorBuilder: (context, error, stackTrace) =>
+                    Container(color: gradientColor),
               ),
               // Dark gradient overlay
               Container(
@@ -2282,9 +2481,12 @@ class _BillboardChip extends StatelessWidget {
                   children: [
                     // Discount badge top
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE5BA73),
+                        color: AppColors.ochre,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -2292,7 +2494,7 @@ class _BillboardChip extends StatelessWidget {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 9,
                           fontWeight: FontWeight.w800,
-                          color: const Color(0xFF141416),
+                          color: AppColors.darkBackground,
                         ),
                       ),
                     ),
@@ -2358,13 +2560,14 @@ class _DishCard extends StatelessWidget {
       child: Container(
         width: 175,
         decoration: BoxDecoration(
-          color: const Color(0xFF141416),
-          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.16),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -2386,8 +2589,8 @@ class _DishCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) => Container(
                       height: 150,
-                      color: Colors.white10,
-                      child: const Icon(Icons.fastfood, color: Colors.white30),
+                      color: AppColors.surfaceVariant,
+                      child: const Icon(Icons.fastfood, color: AppColors.textTertiary),
                     ),
                   ),
                 ),
@@ -2406,14 +2609,15 @@ class _DishCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
+                            color: Colors.black.withValues(alpha: 0.12),
                             blurRadius: 6,
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
                       child: const Icon(
                         Icons.more_horiz_rounded,
-                        color: Colors.black,
+                        color: AppColors.textPrimary,
                         size: 17,
                       ),
                     ),
@@ -2438,7 +2642,7 @@ class _DishCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
                           ),
@@ -2449,7 +2653,7 @@ class _DishCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white.withValues(alpha: 0.55),
+                            color: AppColors.textSecondary,
                             fontSize: 10,
                           ),
                         ),
@@ -2462,7 +2666,7 @@ class _DishCard extends StatelessWidget {
                         Text(
                           'Rs. ${item.price.toInt()}',
                           style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
                             letterSpacing: -0.3,
@@ -2474,12 +2678,12 @@ class _DishCard extends StatelessWidget {
                             width: 28,
                             height: 28,
                             decoration: const BoxDecoration(
-                              color: Color(0xFFE5BA73),
+                              color: AppColors.primary,
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
                               Icons.add_rounded,
-                              color: Color(0xFF141416),
+                              color: Colors.white,
                               size: 18,
                             ),
                           ),
@@ -2550,7 +2754,10 @@ class _SearchSheetState extends State<_SearchSheet> {
             onChanged: (v) => widget.provider.setSearchQuery(v),
             decoration: InputDecoration(
               hintText: 'Search kitchens, dishes, ingredients...',
-              prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textTertiary),
+              prefixIcon: const Icon(
+                Icons.search_rounded,
+                color: AppColors.textTertiary,
+              ),
               filled: true,
               fillColor: AppColors.surfaceVariant,
               border: OutlineInputBorder(

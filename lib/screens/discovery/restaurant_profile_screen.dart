@@ -10,6 +10,7 @@ import '../cart/cart_screen.dart';
 import '../../widgets/app_loader.dart';
 import '../menu/item_detail_sheet.dart';
 import '../../widgets/quick_add_helper.dart';
+import '../../theme/app_colors.dart';
 
 class RestaurantProfileScreen extends StatefulWidget {
   final String restaurantId;
@@ -76,7 +77,7 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7FA),
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           CustomScrollView(
@@ -98,11 +99,39 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
               ..._buildMenuSections(context, restaurant),
               SliverToBoxAdapter(child: _buildSectionHeader('Guest Reviews', null, Icons.format_quote_rounded)),
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 140),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (ctx, idx) => _ReviewCard(review: restaurant.reviews[idx]),
                     childCount: restaurant.reviews.length,
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 140),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          'AN OB HOSPITALITY GROUP KITCHEN',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: AppColors.textTertiary,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.6,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Exclusively curated for fine dining delivery',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: AppColors.textTertiary.withValues(alpha: 0.7),
+                            fontSize: 10,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -178,23 +207,45 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: restaurant.isOpen
-                          ? const Color(0xFF5FB760)
-                          : const Color(0xFFD65839),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      restaurant.isOpen ? '● OPEN  ${restaurant.openingHours}' : '● CLOSED',
-                      style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.4,
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: restaurant.isOpen
+                              ? AppColors.primaryBrand700
+                              : AppColors.error,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          restaurant.isOpen ? '● OPEN  ${restaurant.openingHours}' : '● CLOSED',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.45),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                        ),
+                        child: Text(
+                          'OB HOSPITALITY GROUP',
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -231,9 +282,9 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
         spacing: 8,
         runSpacing: 8,
         children: [
-          _InfoChip(Icons.star_rounded, '${restaurant.rating}  (${restaurant.reviewCount})', const Color(0xFFC4892A)),
-          _InfoChip(Icons.schedule_rounded, restaurant.estimatedTime, const Color(0xFF888888)),
-          _InfoChip(Icons.delivery_dining_rounded, 'Rs. ${restaurant.deliveryFee.toStringAsFixed(0)}', const Color(0xFF888888)),
+          _InfoChip(Icons.star_rounded, '${restaurant.rating}  (${restaurant.reviewCount})', AppColors.ochre),
+          _InfoChip(Icons.schedule_rounded, restaurant.estimatedTime, AppColors.textSecondary),
+          _InfoChip(Icons.delivery_dining_rounded, 'Rs. ${restaurant.deliveryFee.toStringAsFixed(0)}', AppColors.textSecondary),
         ],
       ),
     );
@@ -244,19 +295,19 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
       margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFDF0ED),
+        color: AppColors.terracottaSubtle,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFD65839).withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.store_mall_directory_outlined, color: Color(0xFFD65839), size: 18),
+          const Icon(Icons.store_mall_directory_outlined, color: AppColors.error, size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               '${restaurant.openingHours}. You can browse, but ordering is paused.',
               style: GoogleFonts.plusJakartaSans(
-                color: const Color(0xFFD65839),
+                color: AppColors.error,
                 fontSize: 12,
                 height: 1.4,
               ),
@@ -344,13 +395,13 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
       child: Row(
         children: [
           if (icon != null)
-            Icon(icon, color: const Color(0xFFE5BA73), size: 18)
+            Icon(icon, color: AppColors.primary, size: 18)
           else
             Container(
               width: 3,
               height: 20,
               decoration: BoxDecoration(
-                color: const Color(0xFFE5BA73),
+                color: AppColors.primary,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -361,7 +412,7 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
               Text(
                 title,
                 style: GoogleFonts.plusJakartaSans(
-                  color: const Color(0xFF111111),
+                  color: AppColors.textPrimary,
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                 ),
@@ -370,7 +421,7 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
                 Text(
                   subtitle,
                   style: GoogleFonts.plusJakartaSans(
-                    color: const Color(0xFFAAAAAA),
+                    color: AppColors.textSecondary,
                     fontSize: 11,
                   ),
                 ),
@@ -401,7 +452,7 @@ class _RestaurantProfileScreenState extends State<RestaurantProfileScreen> {
         child: Container(
           height: 54,
           decoration: BoxDecoration(
-            color: const Color(0xFFE5BA73),
+            color: AppColors.primary,
             borderRadius: BorderRadius.circular(27),
           ),
           child: Row(
@@ -503,13 +554,13 @@ class _CategoryBarDelegate extends SliverPersistentHeaderDelegate {
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
               decoration: BoxDecoration(
-                color: isActive ? const Color(0xFFE5BA73) : const Color(0xFFF3F3F6),
+                color: isActive ? AppColors.primary : AppColors.surfaceVariant,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 cat,
                 style: GoogleFonts.plusJakartaSans(
-                  color: isActive ? Colors.white : const Color(0xFF666666),
+                  color: isActive ? Colors.white : AppColors.textSecondary,
                   fontSize: 12,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 ),
@@ -559,7 +610,7 @@ class _MenuItemCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFEEEEEE)),
+            border: Border.all(color: AppColors.border),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -587,8 +638,8 @@ class _MenuItemCard extends StatelessWidget {
                       errorBuilder: (ctx, err, stack) => Container(
                         width: 110,
                         height: 110,
-                        color: const Color(0xFFF3F3F6),
-                        child: const Icon(Icons.fastfood, color: Color(0xFFCCCCCC), size: 30),
+                        color: AppColors.surfaceVariant,
+                        child: const Icon(Icons.fastfood, color: AppColors.textTertiary, size: 30),
                       ),
                     ),
                   ),
@@ -613,7 +664,7 @@ class _MenuItemCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.plusJakartaSans(
-                          color: const Color(0xFF111111),
+                          color: AppColors.textPrimary,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                           height: 1.25,
@@ -625,7 +676,7 @@ class _MenuItemCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.plusJakartaSans(
-                          color: const Color(0xFF9E9E9E),
+                          color: AppColors.textSecondary,
                           fontSize: 11,
                           height: 1.4,
                         ),
@@ -640,7 +691,7 @@ class _MenuItemCard extends StatelessWidget {
                               Text(
                                 'Rs. ${item.price.toStringAsFixed(0)}',
                                 style: GoogleFonts.plusJakartaSans(
-                                  color: const Color(0xFF111111),
+                                  color: AppColors.textPrimary,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: -0.3,
@@ -650,7 +701,7 @@ class _MenuItemCard extends StatelessWidget {
                                 Text(
                                   'Customisable',
                                   style: GoogleFonts.plusJakartaSans(
-                                    color: const Color(0xFFC4892A),
+                                    color: AppColors.ochre,
                                     fontSize: 9,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -663,12 +714,12 @@ class _MenuItemCard extends StatelessWidget {
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: canOrder ? const Color(0xFFE5BA73) : const Color(0xFFF3F3F6),
+                                color: canOrder ? AppColors.primary : AppColors.surfaceVariant,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
                                 canOrder ? Icons.add_rounded : Icons.block_rounded,
-                                color: canOrder ? const Color(0xFF141416) : const Color(0xFFCCCCCC),
+                                color: canOrder ? Colors.white : AppColors.textTertiary,
                                 size: 17,
                               ),
                             ),
@@ -694,8 +745,8 @@ class _BadgePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, bg, icon) = badge == _Badge.chefPick
-        ? ("Chef's Pick", const Color(0xFFE5BA73), Icons.workspace_premium_rounded)
-        : ("Popular", const Color(0xFFD65839), Icons.local_fire_department_rounded);
+        ? ("Chef's Pick", AppColors.ochre, Icons.workspace_premium_rounded)
+        : ("Popular", AppColors.terracotta, Icons.local_fire_department_rounded);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
@@ -738,7 +789,7 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F3F6),
+        color: AppColors.surfaceVariant,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -749,7 +800,7 @@ class _InfoChip extends StatelessWidget {
           Text(
             label,
             style: GoogleFonts.plusJakartaSans(
-              color: const Color(0xFF444444),
+              color: AppColors.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w600,
             ),
@@ -776,7 +827,7 @@ class _ReviewCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEEEEEE)),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -794,19 +845,19 @@ class _ReviewCard extends StatelessWidget {
               Text(
                 review.authorName as String,
                 style: GoogleFonts.plusJakartaSans(
-                  color: const Color(0xFF111111),
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
                 ),
               ),
               Row(
                 children: [
-                  const Icon(Icons.star_rounded, size: 14, color: Color(0xFFE5BA73)),
+                  const Icon(Icons.star_rounded, size: 14, color: AppColors.ochre),
                   const SizedBox(width: 4),
                   Text(
                     (review.rating as num).toStringAsFixed(1),
                     style: GoogleFonts.plusJakartaSans(
-                      color: const Color(0xFFC4892A),
+                      color: AppColors.ochre,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                     ),
@@ -819,7 +870,7 @@ class _ReviewCard extends StatelessWidget {
           Text(
             review.comment as String,
             style: GoogleFonts.plusJakartaSans(
-              color: const Color(0xFF888888),
+              color: AppColors.textSecondary,
               fontSize: 12,
               height: 1.5,
             ),

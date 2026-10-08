@@ -39,7 +39,7 @@ class RestaurantCard extends StatelessWidget {
             Image.network(
               restaurant.imageUrl,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
+              errorBuilder: (_, _, _) => Container(
                 color: AppColors.surfaceVariant,
                 child: const Center(
                   child: Icon(Icons.restaurant, size: 48, color: AppColors.textTertiary),
@@ -211,7 +211,7 @@ class _StatusPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: isOpen ? AppColors.forest : Colors.black87,
+        color: isOpen ? AppColors.forest : AppColors.darkBackground,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
@@ -221,7 +221,7 @@ class _StatusPill extends StatelessWidget {
             width: 6,
             height: 6,
             decoration: BoxDecoration(
-              color: isOpen ? const Color(0xFF4ADE80) : Colors.redAccent,
+              color: isOpen ? AppColors.forestLight : AppColors.error,
               shape: BoxShape.circle,
             ),
           ),
@@ -264,7 +264,7 @@ class _RatingPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star_rounded, size: 14, color: Color(0xFFEAB308)),
+          const Icon(Icons.star_rounded, size: 14, color: AppColors.ochre),
           const SizedBox(width: 3),
           Text(
             rating.toStringAsFixed(1),

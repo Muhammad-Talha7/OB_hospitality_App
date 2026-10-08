@@ -26,7 +26,7 @@ class MockRestaurantRepository implements RestaurantRepository {
       isOpen: true,
       openingHours: '9:00 AM – 11:30 PM',
       imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80',
-      crescentColorValue: 0xFF1B3A4B,
+      crescentColorValue: 0xFF374D6D,
       address: 'Phase V, DHA, Karachi',
       categories: ['Brunch', 'Pasta & Risotto', 'Wood-Fired Pizza', 'Mains', 'Desserts', 'Beverages'],
       menuItems: [
@@ -141,7 +141,7 @@ class MockRestaurantRepository implements RestaurantRepository {
       isOpen: true,
       openingHours: '12:00 PM – 11:00 PM',
       imageUrl: 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800&auto=format&fit=crop&q=80',
-      crescentColorValue: 0xFFB5004E,
+      crescentColorValue: 0xFF374D6D,
       address: 'Khayaban-e-Ittehad, DHA Phase VI, Karachi',
       categories: ['Dim Sum', 'Noodles & Rice', 'Wok Mains', 'Sushi & Rolls', 'Soups', 'Bubble Tea'],
       menuItems: [
@@ -243,7 +243,7 @@ class MockRestaurantRepository implements RestaurantRepository {
       isOpen: true,
       openingHours: '8:00 AM – 10:00 PM',
       imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&auto=format&fit=crop&q=80',
-      crescentColorValue: 0xFF4A7C59,
+      crescentColorValue: 0xFF374D6D,
       address: 'Zamzama Boulevard, DHA Phase V, Karachi',
       categories: ['Artisan Sandwiches', 'Salads & Bowls', 'Charcuterie', 'Pastries', 'Speciality Coffee'],
       menuItems: [
@@ -357,7 +357,7 @@ class MockRestaurantRepository implements RestaurantRepository {
       isOpen: true,
       openingHours: '1:00 PM – 11:30 PM',
       imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80',
-      crescentColorValue: 0xFFB03A2E,
+      crescentColorValue: 0xFF374D6D,
       address: 'Sehar Commercial, DHA Phase VII, Karachi',
       categories: ['Neapolitan Pizzas', 'Handmade Pasta', 'Antipasti', 'Mains', 'Dolci', 'Italian Drinks'],
       menuItems: [

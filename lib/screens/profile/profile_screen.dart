@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../checkout/auth_sheet.dart';
+import '../../theme/app_colors.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -21,7 +22,7 @@ class ProfileScreen extends StatelessWidget {
             Text(
               'Account',
               style: GoogleFonts.plusJakartaSans(
-                color: const Color(0xFF111111),
+                color: AppColors.textPrimary,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
               ),
@@ -34,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFFEEEEEE)),
+                border: Border.all(color: AppColors.border),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -48,10 +49,10 @@ class ProfileScreen extends StatelessWidget {
                   Container(
                     width: 56,
                     height: 56,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFE5BA73), Color(0xFFC4892A)],
+                      gradient: LinearGradient(
+                        colors: [AppColors.primary, AppColors.primaryLight],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -75,7 +76,7 @@ class ProfileScreen extends StatelessWidget {
                         Text(
                           auth.isLoggedIn && user != null ? user.name : 'Guest',
                           style: GoogleFonts.plusJakartaSans(
-                            color: const Color(0xFF111111),
+                            color: AppColors.textPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
@@ -86,7 +87,7 @@ class ProfileScreen extends StatelessWidget {
                               ? user.email
                               : 'Sign in to unlock full features',
                           style: GoogleFonts.plusJakartaSans(
-                            color: const Color(0xFF9E9E9E),
+                            color: AppColors.textTertiary,
                             fontSize: 12,
                           ),
                         ),
@@ -100,14 +101,14 @@ class ProfileScreen extends StatelessWidget {
 
             // ── Sign In / Out ──────────────────────────────────────────
             if (!auth.isLoggedIn)
-              _GoldButton(
+              _PrimaryBrandButton(
                 label: 'Sign In or Create Account',
                 onTap: () => AuthSheet.show(context, onAuthenticated: () {}),
               )
             else
               _OutlineButton(
                 label: 'Log Out',
-                color: const Color(0xFFD65839),
+                color: AppColors.error,
                 onTap: () => auth.logout(),
               ),
             const SizedBox(height: 28),
@@ -118,21 +119,21 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF6EE),
+                color: AppColors.primarySubtle,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE5BA73).withValues(alpha: 0.4)),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.tune_rounded, size: 15, color: Color(0xFFC4892A)),
+                      const Icon(Icons.tune_rounded, size: 15, color: AppColors.primary),
                       const SizedBox(width: 7),
                       Text(
                         'TESTING STATE CONTROL',
                         style: GoogleFonts.plusJakartaSans(
-                          color: const Color(0xFFC4892A),
+                          color: AppColors.primary,
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 0.8,
@@ -146,7 +147,7 @@ class ProfileScreen extends StatelessWidget {
                         ? 'Logged in as ${user?.email}. Checkout proceeds directly.'
                         : 'Guest mode. Auth gate shown at checkout.',
                     style: GoogleFonts.plusJakartaSans(
-                      color: const Color(0xFF888888),
+                      color: AppColors.textSecondary,
                       fontSize: 12,
                       height: 1.5,
                     ),
@@ -157,8 +158,15 @@ class ProfileScreen extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE5BA73),
+                        color: AppColors.primary,
                         borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.25),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Text(
                         auth.isLoggedIn ? 'Switch to Guest Mode' : 'Switch to Logged In',
@@ -183,7 +191,7 @@ class ProfileScreen extends StatelessWidget {
                 (addr) => _ListTile(
                   leading: Icons.home_outlined,
                   title: addr,
-                  trailing: const Icon(Icons.check_rounded, size: 14, color: Color(0xFF5FB760)),
+                  trailing: const Icon(Icons.check_rounded, size: 14, color: AppColors.forest),
                 ),
               ),
               const SizedBox(height: 28),
@@ -195,26 +203,33 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF9F9FB),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFEEEEEE)),
+                border: Border.all(color: AppColors.border),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'OB Hospitality',
+                    'OB Hospitality Group',
                     style: GoogleFonts.plusJakartaSans(
-                      color: const Color(0xFF111111),
+                      color: AppColors.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Ottawa Kabab & Grill, Sashimi Atelier, La Trattoria, and Harissa Sweets.',
+                    'Café Aylanto, Fuchsia Karachi, Fine Foods Co., and The Mad Italian.',
                     style: GoogleFonts.plusJakartaSans(
-                      color: const Color(0xFF888888),
+                      color: AppColors.textSecondary,
                       fontSize: 12,
                       height: 1.6,
                     ),
@@ -231,6 +246,31 @@ class ProfileScreen extends StatelessWidget {
             _ListTile(leading: Icons.language_outlined, title: 'Language', trailing: _Arrow()),
             _ListTile(leading: Icons.help_outline_rounded, title: 'Help & Support', trailing: _Arrow()),
             _ListTile(leading: Icons.policy_outlined, title: 'Privacy Policy', trailing: _Arrow()),
+            const SizedBox(height: 36),
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    'OB HOSPITALITY GROUP',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: AppColors.textTertiary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.8,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Curated Fine Dining & Delivery · v1.0.0',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: AppColors.textTertiary.withValues(alpha: 0.7),
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -249,7 +289,7 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       text,
       style: GoogleFonts.plusJakartaSans(
-        color: const Color(0xFFAAAAAA),
+        color: AppColors.textTertiary,
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.2,
@@ -258,10 +298,10 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-class _GoldButton extends StatelessWidget {
+class _PrimaryBrandButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
-  const _GoldButton({required this.label, required this.onTap});
+  const _PrimaryBrandButton({required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -270,8 +310,15 @@ class _GoldButton extends StatelessWidget {
       child: Container(
         height: 50,
         decoration: BoxDecoration(
-          color: const Color(0xFFE5BA73),
+          color: AppColors.primary,
           borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.35),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Center(
           child: Text(
@@ -334,17 +381,24 @@ class _ListTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEEEEEE)),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(leading, color: const Color(0xFF888888), size: 19),
+          Icon(leading, color: AppColors.textSecondary, size: 19),
           const SizedBox(width: 14),
           Expanded(
             child: Text(
               title,
               style: GoogleFonts.plusJakartaSans(
-                color: const Color(0xFF222222),
+                color: AppColors.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -360,6 +414,6 @@ class _ListTile extends StatelessWidget {
 class _Arrow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Icon(Icons.chevron_right_rounded, color: Color(0xFFCCCCCC), size: 20);
+    return const Icon(Icons.chevron_right_rounded, color: AppColors.textTertiary, size: 20);
   }
 }

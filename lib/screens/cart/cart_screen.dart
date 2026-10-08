@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../widgets/quantity_stepper.dart';
 import '../checkout/checkout_screen.dart';
+import '../../theme/app_colors.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -31,21 +32,21 @@ class CartScreen extends StatelessWidget {
                   Container(
                     width: 88,
                     height: 88,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF5F5F7),
+                    decoration: const BoxDecoration(
+                      color: AppColors.surfaceVariant,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.shopping_bag_outlined,
                       size: 40,
-                      color: Color(0xFFBBBBBB),
+                      color: AppColors.textTertiary,
                     ),
                   ),
                   const SizedBox(height: 20),
                   Text(
                     'Your cart is empty',
                     style: GoogleFonts.plusJakartaSans(
-                      color: const Color(0xFF111111),
+                      color: AppColors.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -55,7 +56,7 @@ class CartScreen extends StatelessWidget {
                     'Explore our kitchens to add\nyour favourite dishes.',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.plusJakartaSans(
-                      color: const Color(0xFF9E9E9E),
+                      color: AppColors.textSecondary,
                       fontSize: 13,
                       height: 1.5,
                     ),
@@ -84,34 +85,47 @@ class CartScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF6EE),
+                    color: AppColors.primarySubtle,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFE5BA73).withValues(alpha: 0.4)),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.storefront_rounded, color: Color(0xFFE5BA73), size: 18),
+                      const Icon(Icons.storefront_rounded, color: AppColors.primary, size: 18),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          cart.restaurantName ?? 'Restaurant',
-                          style: GoogleFonts.plusJakartaSans(
-                            color: const Color(0xFF111111),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              cart.restaurantName ?? 'Restaurant',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Text(
+                              'OB Hospitality Group',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: AppColors.textSecondary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE5BA73).withValues(alpha: 0.15),
+                          color: AppColors.primary.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           '${cart.itemCount} items',
                           style: GoogleFonts.plusJakartaSans(
-                            color: const Color(0xFFC4892A),
+                            color: AppColors.primary,
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
                           ),
@@ -160,8 +174,15 @@ class CartScreen extends StatelessWidget {
               child: Container(
                 height: 54,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE5BA73),
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(27),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -209,7 +230,7 @@ class CartScreen extends StatelessWidget {
           Text(
             'My Cart',
             style: GoogleFonts.plusJakartaSans(
-              color: const Color(0xFF111111),
+              color: AppColors.textPrimary,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
@@ -227,7 +248,7 @@ class CartScreen extends StatelessWidget {
                           title: Text(
                             'Clear Cart?',
                             style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFF111111),
+                              color: AppColors.textPrimary,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                             ),
@@ -235,7 +256,7 @@ class CartScreen extends StatelessWidget {
                           content: Text(
                             'Remove all items from ${cart.restaurantName}?',
                             style: GoogleFonts.plusJakartaSans(
-                              color: const Color(0xFF777777),
+                              color: AppColors.textSecondary,
                               fontSize: 13,
                             ),
                           ),
@@ -243,7 +264,7 @@ class CartScreen extends StatelessWidget {
                             TextButton(
                               onPressed: () => Navigator.pop(dialogCtx),
                               child: Text('Cancel',
-                                  style: GoogleFonts.plusJakartaSans(color: const Color(0xFF9E9E9E))),
+                                  style: GoogleFonts.plusJakartaSans(color: AppColors.textTertiary)),
                             ),
                             TextButton(
                               onPressed: () {
@@ -252,7 +273,7 @@ class CartScreen extends StatelessWidget {
                               },
                               child: Text('Clear',
                                   style: GoogleFonts.plusJakartaSans(
-                                      color: const Color(0xFFD65839), fontWeight: FontWeight.w700)),
+                                      color: AppColors.error, fontWeight: FontWeight.w700)),
                             ),
                           ],
                         ),
@@ -261,7 +282,7 @@ class CartScreen extends StatelessWidget {
                     child: Text(
                       'Clear',
                       style: GoogleFonts.plusJakartaSans(
-                        color: const Color(0xFFD65839),
+                        color: AppColors.error,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -277,9 +298,16 @@ class CartScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9F9FB),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFEEEEEE)),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -288,7 +316,7 @@ class CartScreen extends StatelessWidget {
           _summaryRow('Delivery Fee', 'Rs. ${cart.deliveryFee.toStringAsFixed(0)}'),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
-            child: Divider(color: Color(0xFFEEEEEE), height: 1),
+            child: Divider(color: AppColors.border, height: 1),
           ),
           _summaryRow('Total', 'Rs. ${cart.total.toStringAsFixed(0)}', isTotal: true),
         ],
@@ -303,7 +331,7 @@ class CartScreen extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.plusJakartaSans(
-            color: isTotal ? const Color(0xFF111111) : const Color(0xFF888888),
+            color: isTotal ? AppColors.textPrimary : AppColors.textSecondary,
             fontSize: isTotal ? 15 : 13,
             fontWeight: isTotal ? FontWeight.w700 : FontWeight.w400,
           ),
@@ -311,9 +339,9 @@ class CartScreen extends StatelessWidget {
         Text(
           value,
           style: GoogleFonts.plusJakartaSans(
-            color: isTotal ? const Color(0xFFC4892A) : const Color(0xFF333333),
+            color: isTotal ? AppColors.primary : AppColors.textPrimary,
             fontSize: isTotal ? 17 : 13,
-            fontWeight: isTotal ? FontWeight.w800 : FontWeight.w500,
+            fontWeight: isTotal ? FontWeight.w800 : FontWeight.w600,
             letterSpacing: isTotal ? -0.3 : 0,
           ),
         ),
@@ -336,7 +364,7 @@ class _CartItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFEEEEEE)),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -358,11 +386,11 @@ class _CartItemCard extends StatelessWidget {
                   width: 68,
                   height: 68,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
+                  errorBuilder: (context, error, stackTrace) => Container(
                     width: 68,
                     height: 68,
-                    color: const Color(0xFFF5F5F5),
-                    child: const Icon(Icons.fastfood, color: Color(0xFFCCCCCC)),
+                    color: AppColors.surfaceVariant,
+                    child: const Icon(Icons.fastfood, color: AppColors.textTertiary),
                   ),
                 ),
               ),
@@ -375,7 +403,7 @@ class _CartItemCard extends StatelessWidget {
                       cartItem.menuItem.name,
                       maxLines: 2,
                       style: GoogleFonts.plusJakartaSans(
-                        color: const Color(0xFF111111),
+                        color: AppColors.textPrimary,
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
@@ -384,7 +412,7 @@ class _CartItemCard extends StatelessWidget {
                     Text(
                       'Rs. ${cartItem.unitPrice.toStringAsFixed(0)} each',
                       style: GoogleFonts.plusJakartaSans(
-                        color: const Color(0xFFAAAAAA),
+                        color: AppColors.textTertiary,
                         fontSize: 11,
                       ),
                     ),
@@ -393,7 +421,7 @@ class _CartItemCard extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () => cart.removeItem(cartItem.id),
-                child: const Icon(Icons.close_rounded, size: 18, color: Color(0xFFCCCCCC)),
+                child: const Icon(Icons.close_rounded, size: 18, color: AppColors.textTertiary),
               ),
             ],
           ),
@@ -407,14 +435,14 @@ class _CartItemCard extends StatelessWidget {
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF6EE),
+                    color: AppColors.primarySubtle,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFFE5BA73).withValues(alpha: 0.4)),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
                   ),
                   child: Text(
                     '+ ${addon.name}  Rs. ${addon.priceDelta.toStringAsFixed(0)}',
                     style: GoogleFonts.plusJakartaSans(
-                      color: const Color(0xFFC4892A),
+                      color: AppColors.primary,
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                     ),
@@ -429,7 +457,7 @@ class _CartItemCard extends StatelessWidget {
             Text(
               '"${cartItem.instructions}"',
               style: GoogleFonts.plusJakartaSans(
-                color: const Color(0xFFAAAAAA),
+                color: AppColors.textTertiary,
                 fontSize: 11,
                 fontStyle: FontStyle.italic,
               ),
@@ -437,7 +465,7 @@ class _CartItemCard extends StatelessWidget {
           ],
 
           const SizedBox(height: 12),
-          const Divider(color: Color(0xFFF0F0F0), height: 1),
+          const Divider(color: AppColors.border, height: 1),
           const SizedBox(height: 10),
 
           Row(
@@ -450,7 +478,7 @@ class _CartItemCard extends StatelessWidget {
               Text(
                 'Rs. ${cartItem.totalPrice.toStringAsFixed(0)}',
                 style: GoogleFonts.plusJakartaSans(
-                  color: const Color(0xFF111111),
+                  color: AppColors.textPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.3,

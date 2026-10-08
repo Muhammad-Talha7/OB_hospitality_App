@@ -5,6 +5,7 @@ import '../models/menu_item.dart';
 import '../models/restaurant.dart';
 import '../providers/cart_provider.dart';
 import '../screens/cart/restaurant_conflict_dialog.dart';
+import '../theme/app_colors.dart';
 
 class CartHelper {
   /// Directly adds a dish to cart without opening details.
@@ -29,13 +30,13 @@ class CartHelper {
             children: [
               Container(
                 padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF141416),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.check_rounded,
-                  color: Color(0xFFE5BA73),
+                  color: Colors.white,
                   size: 14,
                 ),
               ),
@@ -46,7 +47,7 @@ class CartHelper {
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
-                    color: const Color(0xFF141416),
+                    color: Colors.white,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -56,7 +57,7 @@ class CartHelper {
           ),
           duration: const Duration(milliseconds: 1800),
           behavior: SnackBarBehavior.floating,
-          backgroundColor: const Color(0xFFE5BA73),
+          backgroundColor: AppColors.primary,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
         ),
@@ -80,13 +81,13 @@ class CartHelper {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF141416),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.check_rounded,
-                      color: Color(0xFFE5BA73),
+                      color: Colors.white,
                       size: 14,
                     ),
                   ),
@@ -97,7 +98,7 @@ class CartHelper {
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w700,
                         fontSize: 13,
-                        color: const Color(0xFF141416),
+                        color: Colors.white,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -107,7 +108,7 @@ class CartHelper {
               ),
               duration: const Duration(milliseconds: 1800),
               behavior: SnackBarBehavior.floating,
-              backgroundColor: const Color(0xFFE5BA73),
+              backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
             ),

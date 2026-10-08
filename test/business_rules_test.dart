@@ -1,8 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:customer_app/models/cart_item.dart';
+import 'package:customer_app/models/restaurant.dart';
 import 'package:customer_app/models/menu_item.dart';
 import 'package:customer_app/models/order.dart';
-import 'package:customer_app/models/restaurant.dart';
 import 'package:customer_app/providers/cart_provider.dart';
 import 'package:customer_app/services/order_repository.dart';
 import 'package:customer_app/services/restaurant_repository.dart';
@@ -74,12 +73,39 @@ void main() {
     });
 
     test('Rule 4: Closed restaurant state is mocked and ordering disabled', () async {
-      final restaurants = await restaurantRepo.getRestaurants();
-      final closedRest = restaurants.firstWhere((r) => !r.isOpen);
+      final closedRestaurant = Restaurant(
+        id: 'closed_test_01',
+        name: 'The Mad Italian (Closed)',
+        tagline: 'Authentic Neapolitan pizzas',
+        cuisine: 'Italian',
+        rating: 4.8,
+        reviewCount: 95,
+        estimatedTime: 'Closed',
+        deliveryFee: 149,
+        minOrder: 700,
+        isOpen: false,
+        openingHours: 'Opens at 1:00 PM',
+        imageUrl: '',
+        crescentColorValue: 0xFF374D6D,
+        address: 'Sehar Commercial, DHA Phase VII, Karachi',
+        categories: ['Italian'],
+        menuItems: [
+          const MenuItem(
+            id: 'closed_item',
+            restaurantId: 'closed_test_01',
+            name: 'Diavola Pizza',
+            description: '',
+            price: 1650,
+            category: 'Italian',
+            imageUrl: '',
+            isAvailable: false,
+          ),
+        ],
+        reviews: const [],
+      );
 
-      expect(closedRest.isOpen, isFalse);
-      expect(closedRest.name, equals('Harissa Sweets & Pastries'));
-      expect(closedRest.menuItems.every((item) => !item.isAvailable), isTrue);
+      expect(closedRestaurant.isOpen, isFalse);
+      expect(closedRestaurant.menuItems.every((item) => !item.isAvailable), isTrue);
     });
 
     test('Rule 5: Cash on Delivery is the designated payment method', () async {

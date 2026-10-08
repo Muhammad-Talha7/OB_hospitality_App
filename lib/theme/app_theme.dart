@@ -11,8 +11,10 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         onPrimary: AppColors.onPrimary,
+        primaryContainer: AppColors.primaryContainer,
         surface: AppColors.surface,
         onSurface: AppColors.textPrimary,
+        surfaceContainerHighest: AppColors.surfaceVariant,
         error: AppColors.error,
       ),
       appBarTheme: AppBarTheme(
